@@ -121,6 +121,14 @@ git commit -m "Add security policy"
 git push
 ```
 
+**Verify Phase 1:**
+```bash
+# All checks should pass
+echo "SBOM packages: $(cat sbom.json | jq '.sbom.packages | length')"
+echo "SECURITY.md exists: $(test -f SECURITY.md && echo 'Yes' || echo 'No')"
+gh api repos/{owner}/{repo} --jq '"Dependency graph: " + (if .has_vulnerability_alerts_enabled then "Enabled" else "Disabled" end)'
+```
+
 See the [Participant Guide](docs/PARTICIPANT_GUIDE.md) for detailed instructions.
 
 ---
@@ -150,6 +158,14 @@ gh api repos/{owner}/{repo}/code-scanning/alerts --jq '.[] | {rule: .rule.id, se
 - Navigate to the Security tab in your repository
 - Select a SQL injection alert
 - Apply Copilot Autofix or manually fix using parameterized queries
+
+**Verify Phase 2:**
+```bash
+# Code scanning should be enabled with alerts detected
+gh api repos/{owner}/{repo}/code-scanning/default-setup --jq '"Code scanning: " + .state'
+gh api repos/{owner}/{repo}/code-scanning/alerts --jq '"Total alerts: " + (length | tostring)'
+gh api repos/{owner}/{repo}/code-scanning/alerts --jq '[.[] | select(.state=="fixed")] | "Fixed alerts: " + (length | tostring)'
+```
 
 ---
 
@@ -184,6 +200,14 @@ rm test-secret.txt
 git reset HEAD~1
 ```
 
+**Verify Phase 3:**
+```bash
+# Secret scanning and push protection should be enabled
+gh api repos/{owner}/{repo} --jq '"Secret scanning: " + .security_and_analysis.secret_scanning.status'
+gh api repos/{owner}/{repo} --jq '"Push protection: " + .security_and_analysis.secret_scanning_push_protection.status'
+gh api repos/{owner}/{repo}/secret-scanning/alerts --jq '"Secret alerts: " + (length | tostring)'
+```
+
 ---
 
 ## Phase 4: Automating Dependency Updates
@@ -212,6 +236,14 @@ git push
 gh pr list --author "app/dependabot"
 ```
 
+**Verify Phase 4:**
+```bash
+# Dependabot should be enabled with alerts detected
+gh api repos/{owner}/{repo} --jq '"Dependabot security updates: " + .security_and_analysis.dependabot_security_updates.status'
+gh api repos/{owner}/{repo}/dependabot/alerts --jq '"Dependabot alerts: " + (length | tostring)'
+test -f .github/dependabot.yml && echo "dependabot.yml: Configured" || echo "dependabot.yml: Missing"
+```
+
 ---
 
 ## Phase 5: Managing Security Across Repositories
@@ -236,6 +268,16 @@ gh api repos/{owner}/ghas-workshop-secondary/code-scanning/alerts --jq 'length'
 - Navigate to Settings > Rules > Rulesets
 - Create a new branch ruleset requiring code scanning to pass
 
+**Verify Phase 5:**
+```bash
+# Both repositories should have security features enabled
+for repo in ghas-workshop ghas-workshop-secondary; do
+  echo "=== $repo ==="
+  gh api repos/{owner}/$repo/code-scanning/alerts --jq '"  Code scanning alerts: " + (length | tostring)' 2>/dev/null || echo "  Code scanning: Not configured"
+done
+gh api repos/{owner}/{repo}/rulesets --jq '"Rulesets configured: " + (length | tostring)'
+```
+
 ---
 
 ## Phase 6: Advanced Automation and Custom Detection
@@ -259,6 +301,14 @@ cp .github/workflows/security-report.yml.example .github/workflows/security-repo
 git add .github/workflows/security-report.yml
 git commit -m "Add weekly security report"
 git push
+```
+
+**Verify Phase 6:**
+```bash
+# Security report script and workflow should be in place
+test -x security-report.sh && echo "security-report.sh: Ready" || echo "security-report.sh: Missing or not executable"
+test -f .github/workflows/security-report.yml && echo "Automated reporting workflow: Configured" || echo "Automated reporting workflow: Missing"
+test -f queries/sensitive-logging.ql.solution && echo "Custom CodeQL query: Available" || echo "Custom CodeQL query: Missing"
 ```
 
 ---
