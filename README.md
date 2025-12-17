@@ -1,6 +1,6 @@
 # GitHub Advanced Security Workshop
 
-### From Fundamentals to Fluency
+### Zero to Hero
 
 This hands-on workshop takes a practical approach to learning GitHub Advanced Security. Rather than simply walking through configuration screens, you will work with real vulnerable code, trigger actual security alerts, and implement fixes yourself.
 
@@ -45,7 +45,7 @@ git --version && gh --version && gh auth status
 Click the green **"Use this template"** button at the top of this repository, or run:
 
 ```bash
-gh repo create ghas-workshop --template msftnadavbh/ghas-workshop-template --public --clone
+gh repo create ghas-workshop --template msftnadavbh/ghas-workshop-zero2hero --public --clone
 cd ghas-workshop
 ```
 
@@ -222,7 +222,7 @@ gh pr list --author "app/dependabot"
 
 **5.1 Create a second repository:**
 ```bash
-gh repo create ghas-workshop-secondary --template msftnadavbh/ghas-workshop-template --public
+gh repo create ghas-workshop-secondary --template msftnadavbh/ghas-workshop-zero2hero --public
 ```
 
 **5.2 Compare security posture:**
@@ -266,7 +266,7 @@ git push
 ## Repository Contents
 
 ```
-ghas-workshop-template/
+ghas-workshop-zero2hero/
 ├── python-api/           # Flask application with SQL injection, path traversal
 ├── node-frontend/        # Express application with XSS, command injection
 ├── java-backend/         # Java application with SSRF, XXE vulnerabilities

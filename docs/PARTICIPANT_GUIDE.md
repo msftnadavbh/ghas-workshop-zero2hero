@@ -21,7 +21,7 @@ Welcome to the hands-on GitHub Advanced Security workshop. This guide contains a
 ### Create Your Workshop Repository
 
 ```bash
-gh repo create ghas-workshop --template msftnadavbh/ghas-workshop-template --public --clone
+gh repo create ghas-workshop --template msftnadavbh/ghas-workshop-zero2hero --public --clone
 cd ghas-workshop
 ```
 
@@ -532,7 +532,7 @@ Organizations have many repositories. Managing security settings individually do
 
 ```bash
 # Create another repository from the template
-gh repo create ghas-workshop-secondary --template msftnadavbh/ghas-workshop-template --public
+gh repo create ghas-workshop-secondary --template msftnadavbh/ghas-workshop-zero2hero --public
 
 # Enable security features on it
 gh api repos/$OWNER/ghas-workshop-secondary/vulnerability-alerts -X PUT
