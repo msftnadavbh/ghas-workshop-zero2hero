@@ -16,18 +16,18 @@ No prior GHAS experience is required. Each phase builds on the previous one, sta
 
 After completing this workshop, you will be able to:
 
-- **Map your software supply chain** — generate a complete inventory of every dependency in your application
-- **Detect vulnerabilities with static analysis** — enable automated code scanning to identify security issues before they reach production
-- **Prevent credential exposure** — experience push protection blocking a secret in real-time
-- **Automate dependency management** — configure Dependabot to keep your dependencies current and secure
-- **Manage security at scale** — use Security Overview and repository rulesets to enforce standards across multiple repositories
-- **Extend with custom automation** — query the GitHub API and write custom CodeQL detection rules
+- **Map your software supply chain**: Generate a complete inventory of every dependency in your application
+- **Detect vulnerabilities with static analysis**: Enable automated code scanning to identify security issues before they reach production
+- **Prevent credential exposure**: Experience push protection blocking a secret in real-time
+- **Automate dependency management**: Configure Dependabot to keep your dependencies current and secure
+- **Manage security at scale**: Use Security Overview and repository rulesets to enforce standards across multiple repositories
+- **Extend with custom automation**: Query the GitHub API and write custom CodeQL detection rules
 
 ---
 
 ## Before You Start
 
-Review the **[Prerequisites Guide](docs/PREREQUISITES.md)** to ensure your environment is ready. Setup typically takes 10–15 minutes.
+Review the **[Prerequisites Guide](docs/PREREQUISITES.md)** to ensure your environment is ready. Setup typically takes 10-15 minutes.
 
 **Summary:** You will need Git, GitHub CLI, and a GitHub account.
 

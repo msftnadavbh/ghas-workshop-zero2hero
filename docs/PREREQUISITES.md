@@ -1,6 +1,6 @@
 # Prerequisites
 
-This guide covers everything required to participate in the workshop. Setup typically takes 10–15 minutes.
+This guide covers everything required to participate in the workshop. Setup typically takes 10-15 minutes.
 
 ---
 
