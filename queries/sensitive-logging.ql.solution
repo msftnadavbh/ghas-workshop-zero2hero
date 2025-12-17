@@ -1,0 +1,71 @@
+/**
+ * Solution: Custom CodeQL Query for Sensitive Data Logging
+ * 
+ * This query detects instances where sensitive variables (passwords, tokens, secrets, etc.)
+ * are being logged, which is a security anti-pattern that can lead to credential exposure.
+ * 
+ * @name Sensitive data written to log
+ * @description Finds instances where variables with sensitive names are logged
+ * @kind problem
+ * @problem.severity warning
+ * @precision medium
+ * @id workshop/sensitive-logging
+ * @tags security
+ *       external/cwe/cwe-532
+ */
+
+import java
+
+/**
+ * Holds if the method is a logging method.
+ * Includes common logging frameworks and System.out/err.
+ */
+predicate isLoggingMethod(Method m) {
+  m.hasName([
+    // System printing
+    "println", "print", "printf",
+    // Common logging frameworks
+    "info", "debug", "warn", "warning", "error", "trace", "fatal",
+    // Generic logging
+    "log", "logp", "logrb"
+  ])
+}
+
+/**
+ * Holds if the variable name suggests it contains sensitive data.
+ */
+predicate isSensitiveVariableName(string name) {
+  name.regexpMatch("(?i).*(password|passwd|pwd|secret|token|apikey|api_key|credential|auth|private_key|privatekey|session|cookie|bearer|jwt|oauth|refresh_token|access_token|client_secret).*")
+}
+
+/**
+ * A method call that appears to be a logging operation.
+ */
+class LoggingCall extends MethodAccess {
+  LoggingCall() {
+    isLoggingMethod(this.getMethod())
+  }
+}
+
+/**
+ * A variable access that refers to a variable with a sensitive name.
+ */
+class SensitiveVariableAccess extends VarAccess {
+  SensitiveVariableAccess() {
+    isSensitiveVariableName(this.getVariable().getName())
+  }
+}
+
+from LoggingCall logCall, SensitiveVariableAccess sensitiveVar
+where
+  // The sensitive variable is used as an argument to the logging call
+  sensitiveVar = logCall.getAnArgument()
+  or
+  // The sensitive variable is part of a string concatenation in the argument
+  exists(AddExpr concat |
+    concat = logCall.getAnArgument() and
+    sensitiveVar.getParent*() = concat
+  )
+select logCall, 
+  "Potentially sensitive variable '" + sensitiveVar.getVariable().getName() + 
+  "' is being logged, which may expose credentials in log files."

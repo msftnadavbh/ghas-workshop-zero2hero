@@ -1,0 +1,24 @@
+# Code Owners for GHAS Workshop Repository
+# Used to demonstrate security governance concepts in Phase 5
+
+# Default owners for everything in the repo
+* @security-team
+
+# Security-sensitive files require security team review
+/.github/workflows/ @security-team
+/.github/dependabot.yml @security-team
+/SECURITY.md @security-team
+
+# Application code owners
+/python-api/ @backend-team @security-team
+/node-frontend/ @frontend-team @security-team
+/java-backend/ @backend-team @security-team
+
+# Documentation
+/docs/ @documentation-team
+/README.md @documentation-team
+
+# Configuration files
+*.yml @devops-team
+*.yaml @devops-team
+*.json @devops-team

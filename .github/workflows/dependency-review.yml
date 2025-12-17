@@ -1,0 +1,34 @@
+# Dependency Review Action
+# Blocks PRs that introduce dependencies with known vulnerabilities
+# Used in Phase 4 of the GHAS Workshop
+
+name: Dependency Review
+
+on: [pull_request]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Fail the workflow if any vulnerability is found with these severities
+          fail-on-severity: high
+          
+          # Comment on the PR with a summary of the review
+          comment-summary-in-pr: always
+          
+          # Optionally deny specific licenses
+          # deny-licenses: GPL-3.0, AGPL-3.0
+          
+          # Allow specific advisories to pass (use with caution)
+          # allow-ghsas: GHSA-xxxx-xxxx-xxxx

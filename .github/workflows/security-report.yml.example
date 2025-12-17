@@ -1,0 +1,116 @@
+# Weekly Security Report Workflow
+# This workflow generates a security summary and creates an issue
+# Used in Phase 6 of the GHAS Workshop
+
+name: Weekly Security Report
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9:00 AM UTC
+  workflow_dispatch:  # Allow manual trigger for testing
+
+jobs:
+  security-report:
+    name: Generate Security Report
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      security-events: read
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate Security Report
+        id: report
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "# Weekly Security Report" > report.md
+          echo "" >> report.md
+          echo "**Repository:** ${{ github.repository }}" >> report.md
+          echo "**Generated:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> report.md
+          echo "" >> report.md
+          
+          echo "---" >> report.md
+          echo "" >> report.md
+          
+          echo "## Code Scanning Alerts" >> report.md
+          echo "" >> report.md
+          
+          # Get code scanning alerts
+          CODE_ALERTS=$(gh api repos/${{ github.repository }}/code-scanning/alerts --jq 'length' 2>/dev/null || echo "0")
+          CODE_CRITICAL=$(gh api repos/${{ github.repository }}/code-scanning/alerts --jq '[.[] | select(.rule.security_severity_level=="critical") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          CODE_HIGH=$(gh api repos/${{ github.repository }}/code-scanning/alerts --jq '[.[] | select(.rule.security_severity_level=="high") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          CODE_MEDIUM=$(gh api repos/${{ github.repository }}/code-scanning/alerts --jq '[.[] | select(.rule.security_severity_level=="medium") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          CODE_LOW=$(gh api repos/${{ github.repository }}/code-scanning/alerts --jq '[.[] | select(.rule.security_severity_level=="low") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          
+          echo "| Severity | Count |" >> report.md
+          echo "|----------|-------|" >> report.md
+          echo "| Critical | $CODE_CRITICAL |" >> report.md
+          echo "| High | $CODE_HIGH |" >> report.md
+          echo "| Medium | $CODE_MEDIUM |" >> report.md
+          echo "| Low | $CODE_LOW |" >> report.md
+          echo "" >> report.md
+          
+          echo "## Secret Scanning Alerts" >> report.md
+          echo "" >> report.md
+          
+          # Get secret scanning alerts
+          SECRET_OPEN=$(gh api repos/${{ github.repository }}/secret-scanning/alerts --jq '[.[] | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          SECRET_RESOLVED=$(gh api repos/${{ github.repository }}/secret-scanning/alerts --jq '[.[] | select(.state=="resolved")] | length' 2>/dev/null || echo "0")
+          
+          echo "| Status | Count |" >> report.md
+          echo "|--------|-------|" >> report.md
+          echo "| Open | $SECRET_OPEN |" >> report.md
+          echo "| Resolved | $SECRET_RESOLVED |" >> report.md
+          echo "" >> report.md
+          
+          echo "## Dependabot Alerts" >> report.md
+          echo "" >> report.md
+          
+          # Get Dependabot alerts
+          DEP_CRITICAL=$(gh api repos/${{ github.repository }}/dependabot/alerts --jq '[.[] | select(.security_vulnerability.severity=="critical") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          DEP_HIGH=$(gh api repos/${{ github.repository }}/dependabot/alerts --jq '[.[] | select(.security_vulnerability.severity=="high") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          DEP_MEDIUM=$(gh api repos/${{ github.repository }}/dependabot/alerts --jq '[.[] | select(.security_vulnerability.severity=="medium") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          DEP_LOW=$(gh api repos/${{ github.repository }}/dependabot/alerts --jq '[.[] | select(.security_vulnerability.severity=="low") | select(.state=="open")] | length' 2>/dev/null || echo "0")
+          
+          echo "| Severity | Count |" >> report.md
+          echo "|----------|-------|" >> report.md
+          echo "| Critical | $DEP_CRITICAL |" >> report.md
+          echo "| High | $DEP_HIGH |" >> report.md
+          echo "| Medium | $DEP_MEDIUM |" >> report.md
+          echo "| Low | $DEP_LOW |" >> report.md
+          echo "" >> report.md
+          
+          echo "---" >> report.md
+          echo "" >> report.md
+          echo "## Summary" >> report.md
+          echo "" >> report.md
+          
+          TOTAL_CRITICAL=$((CODE_CRITICAL + DEP_CRITICAL))
+          TOTAL_HIGH=$((CODE_HIGH + DEP_HIGH))
+          
+          if [ "$TOTAL_CRITICAL" -gt 0 ]; then
+            echo "**Action Required:** There are $TOTAL_CRITICAL critical severity issues that need immediate attention." >> report.md
+          elif [ "$TOTAL_HIGH" -gt 0 ]; then
+            echo "**Attention:** There are $TOTAL_HIGH high severity issues to review." >> report.md
+          else
+            echo "No critical or high severity issues found." >> report.md
+          fi
+          
+          echo "" >> report.md
+          echo "---" >> report.md
+          echo "*This report was automatically generated by GitHub Actions.*" >> report.md
+          
+          cat report.md
+
+      - name: Create Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Weekly Security Report - $(date -u '+%Y-%m-%d')" \
+            --body-file report.md \
+            --label "security,automated-report"
