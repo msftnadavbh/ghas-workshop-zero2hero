@@ -95,8 +95,31 @@ def welcome():
     template = f"<h1>Welcome, {name}!</h1>"
     return render_template_string(template)
 
-# VULNERABILITY: Insecure Deserialization would go here in a real app
-# For workshop purposes, the above vulnerabilities are sufficient
+# VULNERABILITY: Server-Side Request Forgery (SSRF)
+@app.route('/api/fetch')
+def fetch_url():
+    import requests
+    url = request.args.get('url', '')
+    # VULNERABLE: Fetching arbitrary URLs allows access to internal services
+    # Attacker could use: ?url=http://169.254.169.254/latest/meta-data/
+    try:
+        response = requests.get(url, timeout=5)
+        return response.text
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# VULNERABILITY: Insecure Deserialization
+@app.route('/api/import', methods=['POST'])
+def import_data():
+    import pickle
+    import base64
+    data = request.form.get('data', '')
+    # VULNERABLE: Deserializing untrusted data can lead to RCE
+    try:
+        obj = pickle.loads(base64.b64decode(data))
+        return jsonify({"imported": str(obj)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 # Safe endpoint for comparison
 @app.route('/api/users/safe/<int:user_id>')

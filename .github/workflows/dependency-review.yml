@@ -21,14 +21,18 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          # Fail the workflow if any vulnerability is found with these severities
-          fail-on-severity: high
+          # Fail on moderate and above for workshop demonstration
+          fail-on-severity: moderate
           
-          # Comment on the PR with a summary of the review
+          # Comment on the PR with a summary
           comment-summary-in-pr: always
           
-          # Optionally deny specific licenses
-          # deny-licenses: GPL-3.0, AGPL-3.0
+          # Enable license checking
+          license-check: true
+          vulnerability-check: true
           
-          # Allow specific advisories to pass (use with caution)
+          # Block problematic licenses (example)
+          deny-licenses: GPL-3.0, AGPL-3.0
+          
+          # Optionally allow specific advisories
           # allow-ghsas: GHSA-xxxx-xxxx-xxxx

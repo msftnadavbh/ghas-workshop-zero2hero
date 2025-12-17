@@ -32,27 +32,30 @@ jobs:
           - language: javascript-typescript
             build-mode: none
           - language: java-kotlin
-            build-mode: none
+            build-mode: autobuild
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-        # Uncomment the next line to add extended security queries
-        # queries: security-extended
-
-    # For Java, you might need to set up the JDK
     - name: Set up JDK 11
       if: matrix.language == 'java-kotlin'
       uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
+        cache: maven
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        queries: security-extended,security-and-quality
+
+    - name: Build Java
+      if: matrix.language == 'java-kotlin' && matrix.build-mode == 'autobuild'
+      run: mvn -B compile -DskipTests -f java-backend/pom.xml
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

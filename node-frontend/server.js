@@ -160,6 +160,32 @@ app.get('/api/documents/:docId', (req, res) => {
     });
 });
 
+// VULNERABILITY: JWT Algorithm Confusion
+app.post('/api/verify-token', (req, res) => {
+    const jwt = require('jsonwebtoken');
+    const token = req.body.token;
+    try {
+        // VULNERABLE: Accepts 'none' algorithm, allowing token forgery
+        const decoded = jwt.verify(token, 'secret-key', { algorithms: ['HS256', 'none'] });
+        res.json({ valid: true, decoded });
+    } catch (error) {
+        res.status(401).json({ valid: false, error: error.message });
+    }
+});
+
+// VULNERABILITY: Insecure CORS Configuration
+app.use('/api/sensitive', (req, res, next) => {
+    // VULNERABLE: Reflects any origin and allows credentials
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    next();
+});
+
+app.get('/api/sensitive/data', (req, res) => {
+    res.json({ secret: 'This should not be accessible cross-origin' });
+});
+
 // Safe endpoint for comparison
 app.get('/api/safe/search', (req, res) => {
     const query = req.query.q || '';
