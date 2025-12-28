@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Logo.jpg" alt="GitHub Advanced Security Workshop" width="400">
+</p>
+
 # GitHub Advanced Security Workshop
 
 ### Zero to Hero
