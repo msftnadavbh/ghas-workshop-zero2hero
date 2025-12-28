@@ -2,7 +2,7 @@
 
 *Created by **Nadav Ben Haim***
 
-Welcome to the GitHub Advanced Security Workshop! This guide will walk you through each phase step-by-step. No prior GHAS experience is required—just follow along.
+Welcome to the GitHub Advanced Security Workshop! This guide will walk you through each phase step-by-step. No prior GHAS experience is required-just follow along.
 
 ---
 
@@ -35,7 +35,7 @@ You should see your GitHub username printed. If not, run `gh auth login` to auth
 
 ## Phase 1: Dependencies & SBOM (30 min)
 
-> **Your Mission:** Supply chain attacks are on the rise—attackers target the libraries you depend on, not just your code. Before you can secure your supply chain, you need to know what's in it. Your first task is to generate a complete inventory of every dependency in this project.
+> **Your Mission:** Supply chain attacks are on the rise-attackers target the libraries you depend on, not just your code. Before you can secure your supply chain, you need to know what's in it. Your first task is to generate a complete inventory of every dependency in this project.
 
 ### What You'll Learn
 - How to view dependencies across different languages (Node.js, Python, Java)
@@ -52,7 +52,7 @@ This repository intentionally uses outdated packages with known vulnerabilities.
 cat node-frontend/package.json | grep -A 20 '"dependencies"'
 ```
 
-This displays the Node.js dependencies. Notice versions like `lodash: 4.17.15`—these are intentionally old.
+This displays the Node.js dependencies. Notice versions like `lodash: 4.17.15`-these are intentionally old.
 
 ```bash
 cat python-api/requirements.txt
@@ -64,7 +64,7 @@ The Python dependencies. Look for packages like `Flask==1.0.0` and `PyYAML==5.1`
 cat java-backend/pom.xml | grep -A 2 '<dependency>' | head -30
 ```
 
-The Java dependencies in Maven format. You'll see `log4j-core` version `2.14.0`—the infamous Log4Shell vulnerability.
+The Java dependencies in Maven format. You'll see `log4j-core` version `2.14.0`-the infamous Log4Shell vulnerability.
 
 **1.2 Enable the Dependency Graph**
 
@@ -117,7 +117,7 @@ git add SECURITY.md && git commit -m "Add security policy" && git push
 
 ## Phase 2: Code Scanning (35 min)
 
-> **Your Mission:** Vulnerabilities hide in plain sight—SQL Injection, Cross-Site Scripting, and Remote Code Execution are lurking in this codebase. Manual code review can't catch everything. Deploy CodeQL, GitHub's semantic code analysis engine, to automatically hunt down these flaws.
+> **Your Mission:** Vulnerabilities hide in plain sight-SQL Injection, Cross-Site Scripting, and Remote Code Execution are lurking in this codebase. Manual code review can't catch everything. Deploy CodeQL, GitHub's semantic code analysis engine, to automatically hunt down these flaws.
 
 ### What You'll Learn
 - How CodeQL analyzes code for security vulnerabilities
@@ -134,7 +134,7 @@ CodeQL is a powerful static analysis engine that treats code like data. It can f
 gh api repos/$OWNER/$REPO/code-scanning/default-setup -X PATCH -f state=configured
 ```
 
-This enables "Default Setup"—GitHub will automatically configure CodeQL for all supported languages in your repository (Python, JavaScript, Java).
+This enables "Default Setup"-GitHub will automatically configure CodeQL for all supported languages in your repository (Python, JavaScript, Java).
 
 **Wait for the scan to complete:**
 
@@ -153,7 +153,7 @@ Let's look at what CodeQL is hunting for.
 grep -n "SELECT.*+" python-api/app.py
 ```
 
-Look at the results. You'll see code like `"SELECT * FROM users WHERE id = " + user_id`. This is vulnerable because user input is directly concatenated into the SQL query—an attacker could input `1 OR 1=1` to dump the entire database.
+Look at the results. You'll see code like `"SELECT * FROM users WHERE id = " + user_id`. This is vulnerable because user input is directly concatenated into the SQL query-an attacker could input `1 OR 1=1` to dump the entire database.
 
 **Cross-Site Scripting (XSS) in JavaScript:**
 ```bash
@@ -218,7 +218,7 @@ After fixing, commit and push your change. CodeQL will automatically re-scan and
 
 **3.1 Enable Secret Scanning and Push Protection**
 
-Secret Scanning continuously monitors your repository for known credential patterns. Push Protection goes further—it blocks `git push` if a secret is detected.
+Secret Scanning continuously monitors your repository for known credential patterns. Push Protection goes further-it blocks `git push` if a secret is detected.
 
 ```bash
 gh api repos/$OWNER/$REPO -X PATCH \
@@ -277,13 +277,13 @@ Your organization might have internal credential formats that GitHub doesn't rec
 
 Now any string like `WORKSHOP-ABC123XYZ789DEF0` will be flagged.
 
-**✅ Phase 3 Complete!** You've secured your repository against credential leaks—past and future.
+**✅ Phase 3 Complete!** You've secured your repository against credential leaks-past and future.
 
 ---
 
 ## Phase 4: Dependabot (35 min)
 
-> **Your Mission:** Keeping dependencies up to date is tedious but critical. Every week, new CVEs are published for popular packages. Dependabot automates this—it monitors your dependencies and automatically creates pull requests to update vulnerable packages.
+> **Your Mission:** Keeping dependencies up to date is tedious but critical. Every week, new CVEs are published for popular packages. Dependabot automates this-it monitors your dependencies and automatically creates pull requests to update vulnerable packages.
 
 ### What You'll Learn
 - How Dependabot alerts notify you of vulnerable dependencies
@@ -294,7 +294,7 @@ Now any string like `WORKSHOP-ABC123XYZ789DEF0` will be flagged.
 
 **4.1 Enable Dependabot Alerts and Security Updates**
 
-Dependabot Alerts warn you when a dependency has a known vulnerability. Security Updates go further—they automatically open PRs to fix the issue.
+Dependabot Alerts warn you when a dependency has a known vulnerability. Security Updates go further-they automatically open PRs to fix the issue.
 
 ```bash
 gh api repos/$OWNER/$REPO/vulnerability-alerts -X PUT
@@ -363,7 +363,7 @@ If you see PRs, review one! Dependabot PRs include:
 
 ## Phase 5: Security at Scale (35 min)
 
-> **Your Mission:** Everything you've done works for one repository. But what about 100? 1,000? Organizations need to enforce security policies across all repositories consistently. Rulesets let you do exactly that—define rules once, apply everywhere.
+> **Your Mission:** Everything you've done works for one repository. But what about 100? 1,000? Organizations need to enforce security policies across all repositories consistently. Rulesets let you do exactly that-define rules once, apply everywhere.
 
 ### What You'll Learn
 - How to manage security across multiple repositories
@@ -401,7 +401,7 @@ echo "Code Scanning alerts: $(gh api repos/$OWNER/ghas-workshop-secondary/code-s
 echo "Dependabot alerts: $(gh api repos/$OWNER/ghas-workshop-secondary/dependabot/alerts --jq 'length')"
 ```
 
-Imagine doing this for hundreds of repositories—you'd need automation.
+Imagine doing this for hundreds of repositories-you'd need automation.
 
 **5.3 Create a Branch Ruleset**
 
@@ -466,7 +466,7 @@ chmod +x scripts/security-report.sh
 ./scripts/security-report.sh ghas-workshop
 ```
 
-The script queries multiple API endpoints and consolidates the data. Review the output—it shows alerts across Code Scanning, Secret Scanning, and Dependabot.
+The script queries multiple API endpoints and consolidates the data. Review the output-it shows alerts across Code Scanning, Secret Scanning, and Dependabot.
 
 **Open the script to see how it works:**
 
@@ -486,7 +486,7 @@ CodeQL lets you write custom queries for vulnerabilities specific to your applic
 cat queries/sensitive-logging.ql
 ```
 
-This query is designed to detect when sensitive data (passwords, tokens) is written to logs—a common security anti-pattern.
+This query is designed to detect when sensitive data (passwords, tokens) is written to logs-a common security anti-pattern.
 
 **View the completed solution:**
 
@@ -512,7 +512,7 @@ git push
 
 This workflow runs weekly and can be extended to post results to Slack or create issues.
 
-**✅ Phase 6 Complete!** You've graduated from user to power user—building custom tooling on top of GitHub's security platform.
+**✅ Phase 6 Complete!** You've graduated from user to power user-building custom tooling on top of GitHub's security platform.
 
 ---
 

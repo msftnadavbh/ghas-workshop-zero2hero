@@ -10,7 +10,7 @@ Learn GitHub Advanced Security hands-on. Work with real vulnerable code, trigger
 
 ## What is GitHub Advanced Security?
 
-GitHub Advanced Security (GHAS) is a suite of security tools built directly into GitHub. It helps you find and fix vulnerabilities in your code, prevent secrets from leaking, and keep your dependencies up to date—all without leaving your workflow.
+GitHub Advanced Security (GHAS) is a suite of security tools built directly into GitHub. It helps you find and fix vulnerabilities in your code, prevent secrets from leaking, and keep your dependencies up to date-all without leaving your workflow.
 
 **This workshop covers:**
 
