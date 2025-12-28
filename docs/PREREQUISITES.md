@@ -12,6 +12,8 @@ Setup time: ~10 minutes
 | **GitHub CLI** | `gh --version` | [cli.github.com](https://cli.github.com/) |
 | **jq** (optional) | `jq --version` | `brew install jq` / `apt install jq` |
 | **GitHub account** | [github.com](https://github.com/signup) | Free account works |
+| **VS Code** | `code --version` | [code.visualstudio.com](https://code.visualstudio.com/) |
+| **CodeQL Extension** | In VS Code | [marketplace](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-codeql) |
 
 ---
 
@@ -46,6 +48,14 @@ gh auth login
 | Windows | `winget install jqlang.jq` |
 | Linux | `sudo apt install jq` |
 
+### VS Code & CodeQL Extension
+
+1. Install [VS Code](https://code.visualstudio.com/).
+2. Open VS Code.
+3. Go to the Extensions view (`Ctrl+Shift+X`).
+4. Search for "CodeQL".
+5. Install the **CodeQL** extension by GitHub.
+
 ---
 
 ## Verify Setup
@@ -54,6 +64,7 @@ gh auth login
 echo "Git: $(git --version)"
 echo "GitHub CLI: $(gh --version | head -1)"
 echo "jq: $(jq --version 2>/dev/null || echo 'not installed')"
+echo "VS Code: $(code --version 2>/dev/null || echo 'not in PATH')"
 gh auth status
 ```
 

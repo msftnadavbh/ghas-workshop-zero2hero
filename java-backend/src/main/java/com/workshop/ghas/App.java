@@ -22,22 +22,21 @@ public class App {
      * User input is directly concatenated into SQL query
      */
     public String getUserById(String userId) throws SQLException {
-        Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-        Statement stmt = conn.createStatement();
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             Statement stmt = conn.createStatement()) {
         
-        // VULNERABLE: Direct string concatenation in SQL query
-        String query = "SELECT * FROM users WHERE id = '" + userId + "'";
-        ResultSet rs = stmt.executeQuery(query);
-        
-        StringBuilder result = new StringBuilder();
-        while (rs.next()) {
-            result.append(rs.getString("username"));
-            result.append(" - ");
-            result.append(rs.getString("email"));
+            // VULNERABLE: Direct string concatenation in SQL query
+            String query = "SELECT * FROM users WHERE id = '" + userId + "'";
+            ResultSet rs = stmt.executeQuery(query);
+            
+            StringBuilder result = new StringBuilder();
+            while (rs.next()) {
+                result.append(rs.getString("username"));
+                result.append(" - ");
+                result.append(rs.getString("email"));
+            }
+            return result.toString();
         }
-        
-        conn.close();
-        return result.toString();
     }
     
     /**
@@ -157,27 +156,6 @@ public class App {
         
         conn.close();
         return result.toString();
-    }
-    
-    /**
-     * Safe implementation for comparison - XXE prevention
-     */
-    public String parseXmlSafe(String xmlContent) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        
-        // SAFE: Disable external entities
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
-        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-        
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new InputSource(new StringReader(xmlContent)));
-        
-        NodeList nodes = doc.getElementsByTagName("data");
-        if (nodes.getLength() > 0) {
-            return nodes.item(0).getTextContent();
-        }
-        return "";
     }
     
     public static void main(String[] args) {

@@ -42,15 +42,17 @@ def init_db():
 @app.route('/api/users/<user_id>')
 def get_user(user_id):
     conn = get_db_connection()
-    # VULNERABLE: Direct string concatenation in SQL query
-    query = "SELECT * FROM users WHERE id = " + user_id
-    cursor = conn.cursor()
-    cursor.execute(query)
-    user = cursor.fetchone()
-    conn.close()
-    if user:
-        return jsonify(dict(user))
-    return jsonify({"error": "User not found"}), 404
+    try:
+        # VULNERABLE: Direct string concatenation in SQL query
+        query = "SELECT * FROM users WHERE id = " + user_id
+        cursor = conn.cursor()
+        cursor.execute(query)
+        user = cursor.fetchone()
+        if user:
+            return jsonify(dict(user))
+        return jsonify({"error": "User not found"}), 404
+    finally:
+        conn.close()
 
 # VULNERABILITY: SQL Injection in search
 @app.route('/api/search')

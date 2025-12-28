@@ -23,6 +23,8 @@ echo "Working with: $OWNER/$REPO"
 
 ## Phase 1: Dependencies & SBOM (30 min)
 
+> **Your Mission:** Supply chain attacks are on the rise. You can't secure what you don't know you have. Your first task is to map out the attack surface by generating a Software Bill of Materials (SBOM).
+
 ### Exercises
 
 **1.1 View dependencies:**
@@ -59,6 +61,8 @@ git add SECURITY.md && git commit -m "Add security policy" && git push
 
 ## Phase 2: Code Scanning (35 min)
 
+> **Your Mission:** Vulnerabilities love to hide in plain sight. Manual review is too slow. Deploy automated static analysis to hunt down SQL Injections and XSS flaws before the bad guys find them.
+
 ### Exercises
 
 **2.1 Enable code scanning:**
@@ -90,6 +94,8 @@ gh api repos/$OWNER/$REPO/code-scanning/alerts --jq '.[] | {rule: .rule.id, seve
 ---
 
 ## Phase 3: Secret Scanning (30 min)
+
+> **Your Mission:** A leaked credential is a golden key for attackers. Stop the bleeding. Configure Secret Scanning to detect leaked tokens and enable Push Protection to block them at the door.
 
 ### Exercises
 
@@ -126,6 +132,8 @@ rm test-secret.txt && git reset HEAD~1
 
 ## Phase 4: Dependabot (35 min)
 
+> **Your Mission:** Outdated libraries are low-hanging fruit. Don't let your dependencies rot. Automate the patching process so you can focus on shipping features, not chasing CVEs.
+
 ### Exercises
 
 **4.1 Enable Dependabot:**
@@ -160,6 +168,8 @@ gh pr list --author "app/dependabot"
 
 ## Phase 5: Security at Scale (35 min)
 
+> **Your Mission:** Securing one repo is easy. Securing a thousand is a nightmare. Learn to wield Rulesets to enforce security standards across your entire organization instantly.
+
 ### Exercises
 
 **5.1 Create second repo:**
@@ -187,12 +197,14 @@ echo "ghas-workshop-secondary: $(gh api repos/$OWNER/ghas-workshop-secondary/cod
 
 ## Phase 6: API & Custom CodeQL (40 min)
 
+> **Your Mission:** Off-the-shelf tools aren't enough for custom threats. Go deep. Use the API to build custom reports and write your own CodeQL query to catch logic bugs unique to your app.
+
 ### Exercises
 
 **6.1 Security report:**
 ```bash
-chmod +x security-report.sh
-./security-report.sh ghas-workshop
+chmod +x scripts/security-report.sh
+./scripts/security-report.sh ghas-workshop
 ```
 
 **6.2 Review custom CodeQL:**
