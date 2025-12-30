@@ -715,6 +715,229 @@ This workflow runs weekly and can be extended to post results to Slack or create
 
 ---
 
+## Optional Phases
+
+The following phases cover advanced GHAS features. Complete them if you have extra time or want to explore enterprise-grade capabilities.
+
+---
+
+## Phase 7: Copilot Autofix & AI-Powered Remediation (25 min)
+
+> **Your Mission:** Finding vulnerabilities is only half the battle-fixing them is where the real work begins. Copilot Autofix uses AI to automatically generate fixes for security alerts, turning hours of remediation into seconds.
+
+### What You'll Learn
+- How Copilot Autofix generates context-aware fixes
+- How to review and apply AI-generated patches
+- Best practices for AI-assisted remediation
+
+### Prerequisites
+- GitHub Copilot must be enabled for your repository
+- GHAS license (for private repos)
+
+### Exercises
+
+**7.1 Enable Copilot Autofix**
+
+Copilot Autofix is automatically available when both GHAS and Copilot are enabled. Let's verify it's working.
+
+**In your browser:**
+1. Go to your repository → Security → Code scanning alerts
+2. Click on any open alert (e.g., SQL Injection)
+3. Look for the **"Generate fix"** button or an auto-generated fix suggestion
+
+If you see a suggested fix, Copilot Autofix is working!
+
+**7.2 Review an AI-generated fix**
+
+Click **"Generate fix"** on a SQL Injection alert. Copilot will analyze:
+- The vulnerable code pattern
+- The data flow from source to sink
+- Similar fixes in open source projects
+
+**Examine the suggested fix:**
+- Does it use parameterized queries?
+- Does it maintain the original functionality?
+- Are there any edge cases it missed?
+
+> ⚠️ **Important:** Always review AI-generated fixes! Copilot is helpful but not infallible.
+
+**7.3 Apply and test the fix**
+
+If the fix looks correct:
+
+1. Click **"Commit fix"** to create a new branch with the patch
+2. A PR will be automatically created
+3. CodeQL will re-scan to verify the vulnerability is resolved
+
+```bash
+# List PRs from Copilot
+gh pr list --author "app/github-copilot"
+```
+
+**7.4 Bulk remediation workflow**
+
+For repositories with many alerts, use this workflow:
+
+```bash
+# Get all high/critical code scanning alerts
+gh api repos/$OWNER/$REPO/code-scanning/alerts \
+  --jq '.[] | select(.state=="open") | select(.rule.security_severity_level=="high" or .rule.security_severity_level=="critical") | {number: .number, rule: .rule.id, file: .most_recent_instance.location.path}'
+```
+
+**In the browser:**
+1. Go to Security → Code scanning
+2. Filter by severity: Critical, High
+3. For each alert, click "Generate fix"
+4. Review → Commit → Merge
+
+> 💡 **Pro tip:** Prioritize fixes by severity and exploitability. Critical RCE vulnerabilities before low-severity information disclosures.
+
+**✅ Phase 7 Complete!** You've leveraged AI to accelerate security remediation.
+
+---
+
+## Phase 8: Security Overview & Enterprise Governance (30 min)
+
+> **Your Mission:** Individual repositories are secure, but how do you maintain visibility across 100, 500, or 1,000 repos? Security Overview provides a bird's-eye view of your entire organization's security posture, enabling data-driven decisions and compliance reporting.
+
+### What You'll Learn
+- How to navigate the Security Overview dashboard
+- How to identify coverage gaps across repositories
+- How to create organization-wide security configurations
+- How to set up private vulnerability reporting
+
+### Prerequisites
+- Organization admin access (or create a test organization)
+- GHAS license for Security Overview on private repos
+
+### Exercises
+
+**8.1 Explore Security Overview**
+
+Security Overview is available at the organization level.
+
+**Open Security Overview:**
+```bash
+echo "https://github.com/orgs/$OWNER/security/overview"
+```
+
+> 📋 **Note:** If you're using a personal account, you'll need to create an organization first:
+> ```bash
+> echo "https://github.com/account/organizations/new"
+> ```
+
+**Key metrics to review:**
+- **Coverage:** What percentage of repos have GHAS features enabled?
+- **Alerts:** How many open alerts across all repos?
+- **Trends:** Are alert counts going up or down over time?
+
+**8.2 Analyze coverage gaps**
+
+In Security Overview, click the **"Coverage"** tab.
+
+This shows which repositories have:
+- ✅ Code scanning enabled
+- ✅ Secret scanning enabled  
+- ✅ Dependabot enabled
+- ❌ Missing security features
+
+**Export coverage data via API:**
+```bash
+# List all repos in your org with their security status
+gh api orgs/$OWNER/repos --paginate --jq '.[] | {name: .name, private: .private, security: .security_and_analysis}'
+```
+
+**8.3 Create a Security Configuration**
+
+Security Configurations let you define a standard security setup and apply it to multiple repositories at once.
+
+**In your browser:**
+1. Go to Organization → Settings → Code security → Configurations
+2. Click **"New configuration"**
+3. Name: `Standard Security`
+4. Enable:
+   - ✅ Dependency graph
+   - ✅ Dependabot alerts
+   - ✅ Dependabot security updates
+   - ✅ Code scanning (default setup)
+   - ✅ Secret scanning
+   - ✅ Push protection
+5. Save the configuration
+6. Apply to selected repositories
+
+Now any new repository can inherit this configuration automatically!
+
+**8.4 Enable Private Vulnerability Reporting**
+
+Private vulnerability reporting lets external security researchers report vulnerabilities directly to you-without public disclosure.
+
+**Enable via API:**
+```bash
+gh api repos/$OWNER/$REPO -X PATCH \
+  -F private_vulnerability_reporting_enabled=true
+```
+
+**Verify it's enabled:**
+```bash
+gh api repos/$OWNER/$REPO --jq '.private_vulnerability_reporting_enabled'
+```
+
+**In your browser:**
+1. Go to repository → Settings → Code security
+2. Scroll to "Private vulnerability reporting"
+3. Verify it shows **"Enabled"**
+
+Researchers can now submit vulnerabilities via:
+```bash
+echo "https://github.com/$OWNER/$REPO/security/advisories/new"
+```
+
+**8.5 Create a Security Advisory (Bonus)**
+
+If you discover a vulnerability in your own code, you can create a security advisory to coordinate disclosure.
+
+**In your browser:**
+1. Go to repository → Security → Advisories
+2. Click **"New draft security advisory"**
+3. Fill in:
+   - Ecosystem: pip (Python)
+   - Package: ghas-workshop
+   - Affected versions: < 1.0.1
+   - Severity: High
+   - Description: SQL Injection in user lookup endpoint
+4. Save as draft
+
+This creates a private space to:
+- Discuss the vulnerability with collaborators
+- Develop and test a fix in a private fork
+- Coordinate disclosure timing
+- Request a CVE identifier
+
+**8.6 View Organization Security Metrics**
+
+Use the API to build custom dashboards:
+
+```bash
+# Count open alerts across all repos
+echo "=== Security Summary for $OWNER ==="
+
+# Code scanning alerts
+echo "Code Scanning:"
+gh api orgs/$OWNER/code-scanning/alerts --jq '[.[] | select(.state=="open")] | length' 2>/dev/null || echo "  N/A (enable GHAS)"
+
+# Secret scanning alerts  
+echo "Secret Scanning:"
+gh api orgs/$OWNER/secret-scanning/alerts --jq '[.[] | select(.state=="open")] | length' 2>/dev/null || echo "  N/A (enable GHAS)"
+
+# Dependabot alerts
+echo "Dependabot:"
+gh api orgs/$OWNER/dependabot/alerts --jq '[.[] | select(.state=="open")] | length' 2>/dev/null || echo "  N/A"
+```
+
+**✅ Phase 8 Complete!** You now have enterprise-grade visibility and governance over your security program.
+
+---
+
 ## Quick Reference
 
 **View alerts:**
@@ -753,6 +976,13 @@ You've completed the GitHub Advanced Security Workshop. You now know how to:
 - ✅ Automate dependency updates with Dependabot
 - ✅ Enforce security policies at scale with Rulesets
 - ✅ Build custom security tooling with the API
+- ✅ Leverage AI for faster remediation (Phase 7)
+- ✅ Govern security across your organization (Phase 8)
+
+**Next steps:**
+- 📖 Read [EXTRAS.md](EXTRAS.md) to learn about advanced features and licensing
+- 🔗 Explore the [GitHub Security documentation](https://docs.github.com/en/code-security)
+- 🎓 Get certified: [GitHub Advanced Security Certification](https://resources.github.com/learn/certifications/)
 
 **Next Steps:**
 1. Enable GHAS on your real repositories
