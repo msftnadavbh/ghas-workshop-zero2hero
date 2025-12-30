@@ -387,13 +387,14 @@ echo "https://github.com/$OWNER/$REPO/security/secret-scanning"
 
 **3.3 Experience Push Protection in action**
 
-Push Protection blocks secrets that match **real provider patterns** and appear valid. Let's test it with a realistic-looking AWS key:
+Push Protection blocks secrets that match **real provider patterns** and appear valid. Let's test it with a realistic-looking Azure credential:
 
 ```bash
 cat > test-secret.txt << 'EOF'
-# AWS Configuration
-aws_access_key_id = AKIAIOSFODNN7EXAMPLE
-aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+# Azure Configuration
+AZURE_CLIENT_ID=12345678-1234-1234-1234-123456789012
+AZURE_CLIENT_SECRET=abc8Q~defGHIjklMNOpqrSTUvwxYZ0123456789
+AZURE_TENANT_ID=87654321-4321-4321-4321-210987654321
 EOF
 git add test-secret.txt
 git commit -m "Add config"
@@ -423,7 +424,7 @@ git commit -m "Remove test secret"
 git push
 ```
 
-> 💡 **Why some fake tokens pass:** GitHub validates secrets with providers. Obviously fake patterns like `ghp_AAAAAAAAAA` may pass because GitHub knows they're not real. Real-looking tokens get blocked.
+> 💡 **Why some fake tokens pass:** GitHub validates secrets with providers. Obviously fake patterns may pass because GitHub knows they're not real. Real-looking tokens get blocked.
 
 **3.4 Create a custom secret pattern**
 
