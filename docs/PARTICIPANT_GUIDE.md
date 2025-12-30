@@ -79,10 +79,10 @@ This API call enables vulnerability alerts, which automatically turns on the Dep
 **Open it in your browser:**
 
 ```bash
-gh browse -- /network/dependencies
+echo "https://github.com/$OWNER/$REPO/network/dependencies"
 ```
 
-You should see a visual map of all packages used across the three applications.
+Click the URL or copy it to your browser. You should see a visual map of all packages used across the three applications.
 
 **1.3 Generate a Software Bill of Materials (SBOM)**
 
