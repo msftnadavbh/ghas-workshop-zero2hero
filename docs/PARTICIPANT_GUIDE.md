@@ -387,36 +387,43 @@ echo "https://github.com/$OWNER/$REPO/security/secret-scanning"
 
 **3.3 Experience Push Protection in action**
 
-Push Protection blocks secrets that match known patterns. Let's test it with an RSA private key (a non-provider pattern that's always blocked):
+Push Protection blocks secrets at push time. The most reliable way to test this is with a **real GitHub token**:
 
+**Step 1:** Generate a test token (with NO permissions - safe to leak):
 ```bash
-cat > test-secret.txt << 'EOF'
------BEGIN RSA PRIVATE KEY-----
-MIIEpAIBAAKCAQEA04up8hoqzS1+APIB0RhjXyObwHQnOzhAk5Bd7mhkSbPkyhP1
-iEDqF0rMXMteT1SjPAqrJ7aLBpxOE1hvnZa0XpnPCdOPH3aiwMWuN3KNWF8uxPbN
-Hd7JSLxStFbJCxPo3pMOHDBhPGPi0WmgMTBw3p6DxLpXCEbmPRyGCPwJYmBBEwsD
-jk0Hd0LzP8RS0hwNxNRlcW0LNvKbeWbLw9K7DC+VnMRq7pq7reHy5vH9fvvJ0t0K
-OQTNzU4ow3lLr2iGvlHIVLEBZl8lhKBOqnuP1GsCI5mXP3LcrfvBYzZpfb5LRzZi
-a1qLKkcMnBMwVn9XVVvR6O/qXFHNLAknwnR8mwIDAQABAoIBAC1rk1G8bFKHo7Ql
-jfqdN5/T9T5TeR91rlKhB4Pj5DkM3a1qBPjrH8Bxz8ob0mGYkQmZBPnNhGYbj7Rn
-EOF
+echo "https://github.com/settings/tokens/new?description=GHAS-Workshop-Test&scopes="
+```
+
+Click the link, then click **"Generate token"** (leave all scopes unchecked).
+
+**Step 2:** Copy the token and try to commit it:
+```bash
+# Replace ghp_xxxx with your actual token
+echo "GITHUB_TOKEN=ghp_xxxx" > test-secret.txt
 git add test-secret.txt
 git commit -m "Add config"
 git push
 ```
 
-**🛑 You should see Push Protection block the push!** The error message will:
-- Identify the secret type (RSA private key)
-- Show the exact file and line
-- Offer options to bypass (with justification) or remove it
+**🛑 Push Protection will block this!** You'll see:
+```
+remote: error: GH013: Repository rule violations found
+remote: - Push cannot contain secrets
+remote: - GITHUB_TOKEN=ghp_... [secret_scanning]
+```
 
-**Clean up:**
+**Step 3:** Clean up:
 ```bash
 rm test-secret.txt
 git reset HEAD~1
 ```
 
-> 💡 **Why this works:** Push Protection recognizes cryptographic key patterns like RSA/SSH private keys with high confidence, so they're always blocked - no provider validation needed.
+**Step 4:** Revoke the test token:
+```bash
+echo "https://github.com/settings/tokens"
+```
+
+> 💡 **Why real tokens are blocked:** GitHub validates tokens with its own systems. A real `ghp_` token (even with no permissions) is recognized as valid and blocked. Fake/example tokens may pass through.
 
 **3.4 Create a custom secret pattern**
 
