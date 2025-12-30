@@ -355,18 +355,32 @@ gh api repos/$OWNER/$REPO -X PATCH \
 
 This single API call enables both features.
 
-**3.2 Check for existing secrets**
+**3.2 Understand Secret Scanning detection**
 
-This codebase has some hardcoded credentials. Let's see if Secret Scanning found them.
+GitHub Secret Scanning detects **real credential patterns** from 200+ partners (AWS, Azure, GitHub, Slack, etc.). It won't detect generic passwords like `password123`.
 
+**Check for detected secrets:**
 ```bash
 gh api repos/$OWNER/$REPO/secret-scanning/alerts --jq '.[] | {type: .secret_type, state: .state, file: .locations[0].details.path}'
 ```
 
-If any secrets were detected, you'll see them listed with their type (e.g., `github_personal_access_token`).
+> 📋 **Expected result:** Empty `[]` - This workshop uses intentionally **fake** credentials that don't match real provider patterns.
 
-**View them in the browser:**
+**View the hardcoded credentials that CodeQL *will* detect (as code quality issues):**
+```bash
+grep -n "password\|secret\|credential" python-api/config.py
+```
 
+You'll see hardcoded passwords in `config.py`:
+- Line 12: `"password": "SuperSecretPassword123!"`  
+- Line 23: `SECRET_KEY = "my-secret-key-that-should-not-be-here"`
+- Line 33: `"password": "EmailPassword456!"`
+
+**Why weren't these detected?**
+- Secret Scanning looks for **real provider patterns** (e.g., `ghp_` for GitHub tokens, `AKIA` for AWS keys)
+- Generic passwords require custom patterns or code analysis (CodeQL)
+
+**View the Secret Scanning page:**
 ```bash
 echo "https://github.com/$OWNER/$REPO/security/secret-scanning"
 ```
