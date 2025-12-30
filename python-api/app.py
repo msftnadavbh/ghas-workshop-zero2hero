@@ -145,6 +145,13 @@ def get_user_safe(user_id):
 def health():
     return jsonify({"status": "healthy"})
 
+@app.route('/api/calc')
+def calculator():
+    expr = request.args.get('expr', '')
+    # VULNERABLE: User input passed directly to eval
+    result = eval(expr)
+    return jsonify({"result": result})
+
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5000, debug=True)
