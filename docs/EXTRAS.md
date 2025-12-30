@@ -1,247 +1,186 @@
-# GitHub Advanced Security: Extras & Licensing Guide
+# GitHub Advanced Security: Features & Licensing
 
-*Understanding what's free, what's paid, and why GHAS is worth the investment*
+*A practical guide to what's included, what requires licensing, and how to get the most from GHAS*
 
 ---
 
-## 📊 Feature Availability Matrix
+## 📊 Feature Availability
 
-| Feature | Public Repos | Private Repos (Free) | Private Repos (GHAS) |
+| Feature | Public Repos | Private Repos (Free) | Private Repos (GHAS License) |
 |---------|:------------:|:-------------------:|:--------------------:|
-| **Dependency Graph** | ✅ Free | ✅ Free | ✅ Included |
-| **Dependabot Alerts** | ✅ Free | ✅ Free | ✅ Included |
-| **Dependabot Security Updates** | ✅ Free | ✅ Free | ✅ Included |
-| **Dependabot Version Updates** | ✅ Free | ✅ Free | ✅ Included |
-| **Security Advisories** | ✅ Free | ✅ Free | ✅ Included |
-| **Code Scanning (CodeQL)** | ✅ Free | ❌ | ✅ Included |
-| **Secret Scanning** | ✅ Free | ❌ | ✅ Included |
-| **Push Protection** | ✅ Free | ❌ | ✅ Included |
-| **Custom Secret Patterns** | ✅ Free | ❌ | ✅ Included |
-| **Security Overview** | ➖ N/A | ❌ | ✅ Included |
-| **Security Campaigns** | ➖ N/A | ❌ | ✅ Included |
-| **Copilot Autofix** | ✅ Free* | ❌ | ✅ Included* |
-| **Dependency Review Action** | ✅ Free | ❌ | ✅ Included |
-| **Security Configurations** | ➖ N/A | ❌ | ✅ Included |
+| **Dependency Graph** | ✅ | ✅ | ✅ |
+| **Dependabot Alerts** | ✅ | ✅ | ✅ |
+| **Dependabot Security Updates** | ✅ | ✅ | ✅ |
+| **Dependabot Version Updates** | ✅ | ✅ | ✅ |
+| **Security Advisories** | ✅ | ✅ | ✅ |
+| **Code Scanning (CodeQL)** | ✅ | ❌ | ✅ |
+| **Secret Scanning** | ✅ | ❌ | ✅ |
+| **Push Protection** | ✅ | ❌ | ✅ |
+| **Custom Secret Patterns** | ✅ | ❌ | ✅ |
+| **Security Overview** | — | ❌ | ✅ |
+| **Security Campaigns** | — | ❌ | ✅ |
+| **Copilot Autofix*** | ✅ | ❌ | ✅ |
+| **Dependency Review Action** | ✅ | ❌ | ✅ |
+| **Security Configurations** | — | ❌ | ✅ |
 
 *\*Requires GitHub Copilot subscription*
 
 ---
 
-## 💰 Why Pay for GHAS?
+## Feature Deep Dive
 
-### The Real Cost of NOT Having GHAS
+### Code Scanning with CodeQL
 
-Before dismissing GHAS as "just another expense," consider what security incidents actually cost:
+CodeQL is a semantic code analysis engine that finds vulnerabilities by treating code as data. Unlike regex-based scanners, it understands data flow and can trace how user input moves through your application.
 
-| Incident Type | Average Cost | GHAS Prevention |
-|--------------|-------------|-----------------|
-| **Data Breach** | $4.45M (IBM 2023) | Secret Scanning, Push Protection |
-| **Ransomware** | $1.85M average ransom | Code Scanning catches injection flaws |
-| **Supply Chain Attack** | $4.76M (Ponemon) | Dependency Graph, Dependabot |
-| **Compliance Fine (GDPR)** | Up to €20M or 4% revenue | Security Overview, audit trails |
-| **Developer Time (manual review)** | ~$150k/year per dev | Autofix, automated scanning |
+**What it detects:**
+- SQL Injection, XSS, Command Injection
+- Path traversal, insecure deserialization
+- Authentication bypasses, cryptographic weaknesses
+- Language-specific vulnerabilities (40+ CWEs per language)
 
-> 💡 **One prevented breach pays for years of GHAS licensing.**
+**Supported languages:** Python, JavaScript/TypeScript, Java, C/C++, C#, Go, Ruby, Swift, Kotlin
 
----
-
-## 🎯 ROI Breakdown by Feature
-
-### 1. Code Scanning with CodeQL
-
-**What it does:** Finds vulnerabilities in your code before they reach production.
-
-**Without GHAS:**
-- Manual code review: 2-4 hours per PR
-- External SAST tools: $50-200k/year
-- Missed vulnerabilities → breaches
-
-**With GHAS:**
-- Automatic scanning on every push
-- Zero additional tooling cost
-- Catches OWASP Top 10 vulnerabilities
-- Deep semantic analysis (not just regex)
-
-**ROI:** A single SQL injection vulnerability in production could cost $200k+ in incident response, legal fees, and reputation damage. CodeQL catches these for ~$50/developer/month.
+**Custom queries:** Write organization-specific rules using the CodeQL query language. See the `queries/` folder for examples.
 
 ---
 
-### 2. Secret Scanning & Push Protection
+### Secret Scanning & Push Protection
 
-**What it does:** Prevents credentials from being committed and detects existing leaks.
+Secret Scanning detects credentials that have been committed to your repository. Push Protection goes further by blocking secrets *before* they're pushed.
 
-**The Reality:**
-- 30% of data breaches involve leaked credentials (Verizon DBIR)
-- Average time to detect leaked secrets: 327 days
-- Bots scrape GitHub for secrets within seconds of commit
+**Detection coverage:**
+- 200+ secret types from partners (AWS, Azure, GCP, Slack, etc.)
+- GitHub tokens (PATs, OAuth, App tokens)
+- Generic patterns (private keys, connection strings)
+- Custom patterns you define
 
-**Without GHAS:**
-- Secrets live in git history forever
-- Manual rotation after discovery
-- Hope no one finds them
+**How Push Protection works:**
+1. Developer runs `git push`
+2. GitHub scans the commits for secrets
+3. If found, push is blocked with remediation guidance
+4. Developer can remove the secret or (if false positive) bypass with justification
 
-**With GHAS:**
-- **Push Protection blocks secrets at git push** (before they hit GitHub)
-- Automatic detection of 200+ secret types
-- Partner alerts notify providers (AWS, Azure, etc.) immediately
-- Custom patterns for internal credentials
-
-**ROI:** One leaked AWS key can spin up $100k in crypto mining overnight. Push Protection prevents this entirely.
+**Partner program:** When GitHub detects a partner's secret (e.g., an AWS key), the partner is notified automatically so they can revoke it.
 
 ---
 
-### 3. Security Overview & Campaigns
+### Security Overview
 
-**What it does:** Provides organization-wide visibility and coordinates remediation.
+Security Overview provides organization-wide visibility into your security posture across all repositories.
 
-**The Enterprise Problem:**
-- 500+ repositories
-- 50+ development teams
-- "Which repos have security enabled?"
-- "Are we actually fixing alerts?"
+**Key views:**
+- **Risk:** Open alerts by severity across all repos
+- **Coverage:** Which repos have GHAS features enabled
+- **Trends:** Alert counts over time (are you improving?)
+- **Enablement:** Quickly enable features across multiple repos
 
-**Without GHAS:**
-- Spreadsheets and manual audits
-- No visibility into coverage gaps
-- Security team plays whack-a-mole
-
-**With GHAS:**
-- **Single dashboard** for all repos
-- Coverage metrics (% with scanning enabled)
-- Alert trends over time
-- **Security Campaigns**: Assign alerts to teams, track progress
-- Export data for compliance audits
-
-**ROI:** Security teams spend 60% less time on reporting and can focus on actual security work.
+**Use cases:**
+- Identify repos without code scanning enabled
+- Track remediation progress across teams
+- Generate compliance reports
+- Prioritize which repos need attention
 
 ---
 
-### 4. Copilot Autofix
+### Security Campaigns
 
-**What it does:** AI generates fixes for security vulnerabilities.
+Security Campaigns help coordinate large-scale remediation efforts across your organization.
 
-**The Developer Experience Problem:**
-- Developers aren't security experts
-- "I found a vulnerability... now what?"
-- Fixing takes longer than finding
+**How it works:**
+1. Create a campaign (e.g., "Q1 Critical Remediation")
+2. Add alerts from one or multiple repositories
+3. Assign to teams or individuals
+4. Set target dates
+5. Track progress in a unified dashboard
 
-**Without Autofix:**
-- Developer researches vulnerability
-- Reads documentation
-- Writes fix
-- Hopes it's correct
-- **Time: 30 minutes to 2 hours per alert**
-
-**With Autofix:**
-- Click "Generate fix"
-- Review AI-suggested patch
-- Commit
-- **Time: 2-5 minutes per alert**
-
-**ROI:** If you have 100 alerts and save 30 minutes each, that's 50 hours of developer time saved. At $100/hour, that's $5,000 per remediation cycle.
+**Best for:**
+- Coordinating fixes across multiple teams
+- Time-bound remediation initiatives
+- Compliance deadlines
 
 ---
 
-## 🏢 GHAS for Different Organization Sizes
+### Copilot Autofix
 
-### Startups (< 50 developers)
-- **Use free features** on public repos
-- Enable Dependabot everywhere (free)
-- Consider GHAS when you have private repos with customer data
+Copilot Autofix uses AI to generate fixes for code scanning alerts. It analyzes the vulnerability, understands the code context, and suggests a patch.
 
-### Mid-Market (50-500 developers)
-- **GHAS is essential**
-- Security team can't manually review everything
-- Compliance requirements (SOC2, HIPAA) often mandate SAST
-- ROI is immediate with Security Overview
+**What it does:**
+- Generates context-aware fix suggestions
+- Creates PRs with the proposed changes
+- Works for most common vulnerability types
 
-### Enterprise (500+ developers)
-- **GHAS is table stakes**
-- Competitors are already using it
-- Security Campaigns coordinate thousands of alerts
-- Custom CodeQL queries for organization-specific risks
-- Integrations with Jira, ServiceNow, Splunk
+**What it doesn't do:**
+- Replace human review (always verify fixes)
+- Fix every vulnerability type
+- Guarantee correctness (test thoroughly)
+
+**Requirements:** GitHub Copilot subscription + GHAS license (for private repos)
 
 ---
 
-## 📋 Compliance & Audit Benefits
+### Dependency Review Action
 
-GHAS helps satisfy requirements for:
+The Dependency Review Action runs on pull requests and blocks merges if the PR introduces vulnerable dependencies.
 
-| Framework | Relevant GHAS Features |
-|-----------|----------------------|
-| **SOC 2** | Code scanning, secret scanning, audit logs |
-| **ISO 27001** | Vulnerability management, dependency tracking |
-| **PCI DSS** | Code review (6.3.2), vulnerability scanning (11.3) |
-| **HIPAA** | Access controls, audit trails |
-| **FedRAMP** | Continuous monitoring, vulnerability remediation |
-| **GDPR** | Data protection by design, breach prevention |
+**Configuration options:**
+- Block by severity (critical, high, medium, low)
+- Block by license type (GPL, AGPL, etc.)
+- Allow specific vulnerabilities (with justification)
 
-**Auditors love:**
-- Automated evidence collection
-- Historical trend data
-- Proof of remediation
-- SBOM generation for software inventory
-
----
-
-## 🚀 Getting Started with GHAS
-
-### Step 1: Start a Trial
-```bash
-echo "https://github.com/enterprise/trial"
+**Example workflow:**
+```yaml
+- name: Dependency Review
+  uses: actions/dependency-review-action@v4
+  with:
+    fail-on-severity: moderate
+    deny-licenses: GPL-3.0, AGPL-3.0
 ```
 
-GitHub offers a 30-day free trial of GHAS for organizations.
+---
 
-### Step 2: Enable on High-Risk Repos First
-Don't boil the ocean. Start with:
-- Customer-facing applications
-- Repos with sensitive data
-- Repos with external contributors
+## Licensing Model
 
-### Step 3: Measure the Impact
-After 30 days, measure:
-- Vulnerabilities found
-- Secrets blocked
-- Developer time saved
-- Compliance gaps closed
+GHAS is licensed **per active committer**. An active committer is someone who has pushed code to a GHAS-enabled private repository in the last 90 days.
 
-### Step 4: Make the Business Case
-Present to leadership:
-- Cost of GHAS vs. cost of breach
-- Time saved on manual review
-- Compliance boxes checked
-- Developer satisfaction (they love Autofix)
+**What counts:**
+- Commits to GHAS-enabled private repos
+- Bot accounts that commit code
+
+**What doesn't count:**
+- Read-only access
+- Commits to public repos (GHAS is free)
+- Inactive users (no commits in 90 days)
+
+**Pricing:** See [github.com/pricing](https://github.com/pricing) for current rates.
 
 ---
 
-## 💬 Common Objections (And How to Address Them)
+## Compliance & Audit
 
-### "We already have security tools"
-GHAS integrates with your existing tools via SARIF. It's not replacement—it's enhancement. Plus, native GitHub integration means developers actually use it.
+GHAS provides capabilities that support various compliance frameworks:
 
-### "It's too expensive"
-Compare to:
-- Standalone SAST tools ($100k+/year)
-- Security consultants ($300/hour)
-- One data breach ($4.45M average)
+| Framework | Relevant Capabilities |
+|-----------|----------------------|
+| **SOC 2** | Automated vulnerability scanning, audit logs, evidence of remediation |
+| **ISO 27001** | Vulnerability management, dependency tracking, access controls |
+| **PCI DSS** | Code review requirements (6.3.2), vulnerability scanning (11.3) |
+| **HIPAA** | Access audit trails, security monitoring |
+| **FedRAMP** | Continuous monitoring, automated remediation tracking |
 
-### "Our developers will ignore the alerts"
-That's why you need:
-- Rulesets (block merges until fixed)
-- Copilot Autofix (make fixing easy)
-- Security Campaigns (assign ownership)
-
-### "We don't have security expertise"
-You don't need it! CodeQL is maintained by GitHub's security researchers. You get world-class vulnerability detection without building a security team.
+**Useful for audits:**
+- SBOM export (SPDX format) for software inventory
+- Alert history showing detection and remediation dates
+- Security Overview reports for coverage metrics
+- API access for custom compliance reporting
 
 ---
 
-## 🔧 Advanced Features Worth Exploring
+## Advanced Capabilities
 
-### SARIF Upload (Third-Party Scanners)
-Already using Snyk, Checkmarx, or SonarQube? Upload results to GitHub:
+### SARIF Upload
+
+Integrate third-party scanners by uploading results in SARIF format:
 
 ```yaml
 - name: Upload SARIF
@@ -250,10 +189,11 @@ Already using Snyk, Checkmarx, or SonarQube? Upload results to GitHub:
     sarif_file: results.sarif
 ```
 
-All alerts appear in the same Security tab—one unified view.
+All results appear in the same Security tab alongside CodeQL findings.
 
 ### Custom CodeQL Query Packs
-Create organization-specific queries and share them:
+
+Create and share organization-specific queries:
 
 ```bash
 # Initialize a query pack
@@ -264,44 +204,60 @@ codeql pack publish
 ```
 
 ### Webhook Notifications
-Get real-time alerts in Slack, Teams, or PagerDuty:
+
+Subscribe to security events for integration with external systems:
 
 ```bash
-# Create a webhook for code scanning alerts
 gh api repos/$OWNER/$REPO/hooks -X POST \
   -f name=web \
-  -f config[url]="https://your-webhook.com/github" \
+  -f config[url]="https://your-system.com/webhook" \
   -f config[content_type]=json \
-  -f events[]=code_scanning_alert
+  -f events[]=code_scanning_alert \
+  -f events[]=secret_scanning_alert
 ```
 
-### Security Campaigns
-Coordinate large-scale remediation:
+### API Access
 
-1. Go to Organization → Security → Campaigns
-2. Create campaign: "Q1 Critical Vulnerability Remediation"
-3. Add alerts from multiple repos
-4. Assign to teams with deadlines
-5. Track progress in dashboard
+Full API access for automation and custom tooling:
+
+```bash
+# List all open code scanning alerts
+gh api repos/$OWNER/$REPO/code-scanning/alerts --jq '.[] | select(.state=="open")'
+
+# Organization-wide secret scanning alerts
+gh api orgs/$OWNER/secret-scanning/alerts
+
+# Export SBOM
+gh api repos/$OWNER/$REPO/dependency-graph/sbom
+```
 
 ---
 
-## 📚 Additional Resources
+## Getting Started
 
-- [GitHub Advanced Security Documentation](https://docs.github.com/en/enterprise-cloud@latest/code-security)
-- [GHAS Pricing](https://github.com/pricing)
-- [CodeQL Query Library](https://codeql.github.com/)
+### For Public Repositories
+All GHAS features are free. Enable them in Settings → Code security and analysis.
+
+### For Private Repositories
+1. Start a [30-day trial](https://github.com/enterprise/trial)
+2. Enable on a few repositories to evaluate
+3. Review the alerts and remediation experience
+4. Expand to more repositories as needed
+
+### Recommended Rollout
+1. **Start small:** Enable on 2-3 high-priority repos
+2. **Fix critical alerts:** Build confidence with quick wins
+3. **Enable rulesets:** Prevent new vulnerabilities from merging
+4. **Expand coverage:** Roll out to more repos using Security Configurations
+5. **Track progress:** Use Security Overview to measure improvement
+
+---
+
+## Resources
+
+- [GitHub Advanced Security Documentation](https://docs.github.com/en/code-security)
+- [CodeQL Documentation](https://codeql.github.com/docs/)
+- [CodeQL Query Library](https://github.com/github/codeql)
 - [GitHub Security Lab](https://securitylab.github.com/)
 - [GHAS Certification](https://resources.github.com/learn/certifications/)
-
----
-
-## 🤝 Need Help?
-
-- **Sales:** Contact your GitHub account team
-- **Technical:** [GitHub Support](https://support.github.com/)
-- **Community:** [GitHub Community Discussions](https://github.com/orgs/community/discussions)
-
----
-
-*"Security is not a feature—it's a foundation. GHAS makes that foundation accessible to every developer."*
+- [GitHub Community Discussions](https://github.com/orgs/community/discussions)
