@@ -387,44 +387,36 @@ echo "https://github.com/$OWNER/$REPO/security/secret-scanning"
 
 **3.3 Experience Push Protection in action**
 
-Push Protection blocks secrets that match **real provider patterns** and appear valid. Let's test it with a realistic-looking Azure credential:
+Push Protection blocks secrets that match known patterns. Let's test it with an RSA private key (a non-provider pattern that's always blocked):
 
 ```bash
 cat > test-secret.txt << 'EOF'
-# Azure Configuration
-AZURE_CLIENT_ID=12345678-1234-1234-1234-123456789012
-AZURE_CLIENT_SECRET=abc8Q~defGHIjklMNOpqrSTUvwxYZ0123456789
-AZURE_TENANT_ID=87654321-4321-4321-4321-210987654321
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA04up8hoqzS1+APIB0RhjXyObwHQnOzhAk5Bd7mhkSbPkyhP1
+iEDqF0rMXMteT1SjPAqrJ7aLBpxOE1hvnZa0XpnPCdOPH3aiwMWuN3KNWF8uxPbN
+Hd7JSLxStFbJCxPo3pMOHDBhPGPi0WmgMTBw3p6DxLpXCEbmPRyGCPwJYmBBEwsD
+jk0Hd0LzP8RS0hwNxNRlcW0LNvKbeWbLw9K7DC+VnMRq7pq7reHy5vH9fvvJ0t0K
+OQTNzU4ow3lLr2iGvlHIVLEBZl8lhKBOqnuP1GsCI5mXP3LcrfvBYzZpfb5LRzZi
+a1qLKkcMnBMwVn9XVVvR6O/qXFHNLAknwnR8mwIDAQABAoIBAC1rk1G8bFKHo7Ql
+jfqdN5/T9T5TeR91rlKhB4Pj5DkM3a1qBPjrH8Bxz8ob0mGYkQmZBPnNhGYbj7Rn
 EOF
 git add test-secret.txt
 git commit -m "Add config"
 git push
 ```
 
-> ⚠️ **What happens?**
-> - If Push Protection **blocks** it: You'll see a detailed error explaining which secret was detected and options to bypass (with justification) or remove it.
-> - If it **passes**: The secret pattern may not be recognized, or your organization settings allow it. This varies by repository configuration.
+**🛑 You should see Push Protection block the push!** The error message will:
+- Identify the secret type (RSA private key)
+- Show the exact file and line
+- Offer options to bypass (with justification) or remove it
 
-**Alternative test - Use your own test token:**
-
-1. Go to GitHub → Settings → Developer settings → Personal access tokens
-2. Generate a **new classic token** with NO permissions (safe to leak)
-3. Try to commit it - Push Protection will definitely block it since it's a real token
-
-**Clean up (if the push was blocked):**
+**Clean up:**
 ```bash
 rm test-secret.txt
 git reset HEAD~1
 ```
 
-**Clean up (if the push succeeded):**
-```bash
-git rm test-secret.txt
-git commit -m "Remove test secret"
-git push
-```
-
-> 💡 **Why some fake tokens pass:** GitHub validates secrets with providers. Obviously fake patterns may pass because GitHub knows they're not real. Real-looking tokens get blocked.
+> 💡 **Why this works:** Push Protection recognizes cryptographic key patterns like RSA/SSH private keys with high confidence, so they're always blocked - no provider validation needed.
 
 **3.4 Create a custom secret pattern**
 
