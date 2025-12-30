@@ -387,23 +387,43 @@ echo "https://github.com/$OWNER/$REPO/security/secret-scanning"
 
 **3.3 Experience Push Protection in action**
 
-Let's intentionally try to commit a secret and see Push Protection block it.
+Push Protection blocks secrets that match **real provider patterns** and appear valid. Let's test it with a realistic-looking AWS key:
 
 ```bash
-echo "GITHUB_TOKEN=ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef12" > test-secret.txt
+cat > test-secret.txt << 'EOF'
+# AWS Configuration
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+EOF
 git add test-secret.txt
-git commit -m "Test secret"
+git commit -m "Add config"
 git push
 ```
 
-**You should see an error!** GitHub detected the fake token pattern and refused the push. This is Push Protection working.
+> ⚠️ **What happens?**
+> - If Push Protection **blocks** it: You'll see a detailed error explaining which secret was detected and options to bypass (with justification) or remove it.
+> - If it **passes**: The secret pattern may not be recognized, or your organization settings allow it. This varies by repository configuration.
 
-**Clean up:**
+**Alternative test - Use your own test token:**
 
+1. Go to GitHub → Settings → Developer settings → Personal access tokens
+2. Generate a **new classic token** with NO permissions (safe to leak)
+3. Try to commit it - Push Protection will definitely block it since it's a real token
+
+**Clean up (if the push was blocked):**
 ```bash
 rm test-secret.txt
 git reset HEAD~1
 ```
+
+**Clean up (if the push succeeded):**
+```bash
+git rm test-secret.txt
+git commit -m "Remove test secret"
+git push
+```
+
+> 💡 **Why some fake tokens pass:** GitHub validates secrets with providers. Obviously fake patterns like `ghp_AAAAAAAAAA` may pass because GitHub knows they're not real. Real-looking tokens get blocked.
 
 **3.4 Create a custom secret pattern**
 
