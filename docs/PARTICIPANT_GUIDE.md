@@ -584,17 +584,43 @@ Now, any PR to `main` must pass CodeQL before merging.
 
 **5.4 Test the ruleset**
 
-Create a branch with a vulnerability and try to merge it:
+Create a branch with a new vulnerability and try to merge it. We'll add a Flask route that passes user input directly to `exec()` - this creates a clear data flow from an untrusted source to a dangerous sink that CodeQL will detect.
+
+> ⚠️ **Why this matters:** CodeQL uses data flow analysis, not simple pattern matching. It looks for paths where **untrusted user input** flows into **dangerous functions**. A standalone `eval(input())` won't trigger an alert because `input()` reads from stdin, not from an HTTP request.
 
 ```bash
 git checkout -b test-vulnerability
-echo 'eval(input())' >> python-api/app.py
-git add . && git commit -m "Add vulnerability"
-git push -u origin test-vulnerability
-gh pr create --title "Test PR" --body "Testing ruleset"
 ```
 
-The PR should be blocked from merging until CodeQL passes (and it won't, because you just added a code injection vulnerability).
+Add a vulnerable endpoint to `python-api/app.py`. Insert this code before the `if __name__ == '__main__':` block:
+
+```python
+@app.route('/api/execute')
+def execute_code():
+    code = request.args.get('code', '')
+    # VULNERABLE: User input passed directly to exec
+    exec(code)
+    return jsonify({"status": "executed"})
+```
+
+> 💡 **Tip:** You can use VS Code to edit the file: `code python-api/app.py`
+
+Commit and create the PR:
+
+```bash
+git add . && git commit -m "Add execute endpoint"
+git push -u origin test-vulnerability
+gh pr create --title "Test PR - Add execute endpoint" --body "Testing ruleset with a real vulnerability"
+```
+
+**Wait for CodeQL to complete** (3-5 minutes), then check the PR status:
+
+```bash
+gh pr checks
+```
+
+The PR should be blocked from merging because CodeQL detected:
+- **Code Injection vulnerability** - user input flows directly into `exec()`
 
 **Clean up:**
 
