@@ -175,7 +175,7 @@ This lists all detected vulnerabilities with their severity and location.
 **Open the Security tab in your browser for a detailed view:**
 
 ```bash
-gh browse -- /security/code-scanning
+echo "https://github.com/$OWNER/$REPO/security/code-scanning"
 ```
 
 Click on any alert to see:
@@ -240,7 +240,7 @@ If any secrets were detected, you'll see them listed with their type (e.g., `git
 **View them in the browser:**
 
 ```bash
-gh browse -- /security/secret-scanning
+echo "https://github.com/$OWNER/$REPO/security/secret-scanning"
 ```
 
 **3.3 Experience Push Protection in action**
@@ -315,7 +315,7 @@ This lists every vulnerable package, its severity, and the affected versions.
 **Open in browser for full details:**
 
 ```bash
-gh browse -- /security/dependabot
+echo "https://github.com/$OWNER/$REPO/security/dependabot"
 ```
 
 Click on any alert to see:
@@ -539,7 +539,7 @@ gh api repos/$OWNER/$REPO/vulnerability-alerts -X PUT
 
 **Open in browser:**
 ```bash
-gh browse -- /security
+echo "https://github.com/$OWNER/$REPO/security"
 ```
 
 ---
