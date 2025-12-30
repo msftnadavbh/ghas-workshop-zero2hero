@@ -186,20 +186,148 @@ Click on any alert to see:
 
 **2.4 Fix a vulnerability**
 
-Pick one alert and fix it. For SQL Injection, the fix is to use **parameterized queries** instead of string concatenation.
+Choose **ONE** of the following three vulnerabilities to fix. Each includes step-by-step instructions.
 
-**Example fix for Python:**
+---
+
+<details>
+<summary><strong>Option A: Fix SQL Injection in Python (Recommended for beginners)</strong></summary>
+
+**The Problem:** In `python-api/app.py`, user input is directly concatenated into SQL queries, allowing attackers to manipulate the database.
+
+**Location:** Line 44-45 in `python-api/app.py`
+
+**Step 1:** Open the file:
+```bash
+code python-api/app.py
+```
+
+**Step 2:** Find this vulnerable code (around line 44):
 ```python
-# Vulnerable:
+# VULNERABLE: Direct string concatenation in SQL query
 query = "SELECT * FROM users WHERE id = " + user_id
+cursor = conn.cursor()
+cursor.execute(query)
+```
 
-# Fixed:
+**Step 3:** Replace it with this secure version:
+```python
+# SECURE: Using parameterized query with placeholder
+cursor = conn.cursor()
 cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
 ```
 
-After fixing, commit and push your change. CodeQL will automatically re-scan and close the alert if the fix is correct.
+**Why this works:** The `?` placeholder tells SQLite to treat `user_id` as data, not code. Even if an attacker inputs `1 OR 1=1`, it's treated as a literal string.
+
+</details>
+
+---
+
+<details>
+<summary><strong>Option B: Fix Cross-Site Scripting (XSS) in JavaScript</strong></summary>
+
+**The Problem:** In `node-frontend/server.js`, user input is rendered directly in HTML without escaping, allowing attackers to inject malicious scripts.
+
+**Location:** Line 30 in `node-frontend/server.js`
+
+**Step 1:** Open the file:
+```bash
+code node-frontend/server.js
+```
+
+**Step 2:** Add this helper function near the top of the file (after line 12):
+```javascript
+// HTML encoding helper to prevent XSS
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;'
+    };
+    return text.replace(/[&<>"']/g, char => map[char]);
+}
+```
+
+**Step 3:** Find this vulnerable code (around line 30):
+```javascript
+<h1>Search Results for: ${query}</h1>
+```
+
+**Step 4:** Replace it with:
+```javascript
+<h1>Search Results for: ${escapeHtml(query)}</h1>
+```
+
+**Why this works:** `escapeHtml()` converts dangerous characters like `<` and `>` into harmless HTML entities (`&lt;` and `&gt;`), so `<script>` becomes `&lt;script&gt;` and won't execute.
+
+</details>
+
+---
+
+<details>
+<summary><strong>Option C: Fix Command Injection in Python</strong></summary>
+
+**The Problem:** In `python-api/app.py`, user input is passed directly to a shell command, allowing attackers to execute arbitrary system commands.
+
+**Location:** Line 71 in `python-api/app.py`
+
+**Step 1:** Open the file:
+```bash
+code python-api/app.py
+```
+
+**Step 2:** Find this vulnerable code (around line 71):
+```python
+# VULNERABLE: User input passed directly to shell command
+result = subprocess.check_output("ping -c 1 " + host, shell=True)
+return result.decode()
+```
+
+**Step 3:** Replace the entire `ping_host` function with:
+```python
+@app.route('/api/ping')
+def ping_host():
+    import re
+    host = request.args.get('host', 'localhost')
+    
+    # SECURE: Validate input - only allow valid hostnames/IPs
+    if not re.match(r'^[a-zA-Z0-9][a-zA-Z0-9\-\.]*$', host):
+        return jsonify({"error": "Invalid hostname"}), 400
+    
+    # SECURE: Use list arguments instead of shell=True
+    try:
+        result = subprocess.check_output(
+            ["ping", "-c", "1", host],
+            timeout=5
+        )
+        return result.decode()
+    except subprocess.CalledProcessError:
+        return jsonify({"error": "Ping failed"}), 500
+```
+
+**Why this works:** 
+1. Input validation rejects suspicious characters like `;` and `|`
+2. Using a list `["ping", "-c", "1", host]` instead of `shell=True` prevents shell interpretation
+
+</details>
+
+---
+
+**After fixing, commit and push:**
+```bash
+git add -A && git commit -m "Fix security vulnerability" && git push
+```
+
+CodeQL will automatically re-scan (takes ~3 minutes). Check your alert count:
+```bash
+gh api repos/$OWNER/$REPO/code-scanning/alerts --jq '[.[] | select(.state=="open")] | length'
+```
 
 > 💡 **Tip:** GitHub Copilot can suggest fixes! Click "Generate fix" on any alert in the browser.
+>
+> 📁 **Reference:** Full secure versions are available in the `solutions/` folder.
 
 **✅ Phase 2 Complete!** You've deployed automated vulnerability detection and fixed real security flaws.
 
