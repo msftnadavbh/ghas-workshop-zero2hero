@@ -29,13 +29,17 @@
 | Phase 4 | 35 min | Dependabot configured |
 | Phase 5 | 35 min | Ruleset created |
 | Phase 6 | 40 min | Report running |
+| **Phase 7** *(optional)* | 25 min | Autofix applied |
+| **Phase 8** *(optional)* | 30 min | Security Overview explored |
 
-**Total: ~4 hours with breaks**
+**Total: ~4 hours (core) + 1 hour (optional phases)**
 
-**Shorter versions:**
-- Half-day: Phases 1-4
-- 90 min intro: Phases 1-2
-- Advanced: Phases 4-6
+**Workshop Formats:**
+- **Full day:** All 8 phases with breaks
+- **Half-day:** Phases 1-4 (core features)
+- **90 min intro:** Phases 1-2 (dependencies + code scanning)
+- **Advanced:** Phases 4-6 + 7-8 (automation & enterprise)
+- **Enterprise focus:** Phases 5-8 (governance & scale)
 
 ---
 
@@ -44,11 +48,14 @@
 | Problem | Solution |
 |---------|----------|
 | `gh: command not found` | Install GitHub CLI or demo via browser |
-| Code scanning unavailable | Repo must be public |
+| Code scanning unavailable | Repo must be public or have GHAS license |
 | Scan takes too long | Review vulnerable code while waiting (3-5 min) |
 | Push not blocked | Must use CLI, not web editor |
 | No Dependabot PRs | Wait 5-10 min |
 | SBOM empty | Dependency graph needs time; return later |
+| Copilot Autofix not showing | Requires Copilot + GHAS; skip Phase 7 if unavailable |
+| Security Overview empty | Requires org-level access; demo with screenshots |
+| Direct push blocked (Phase 6.3) | Ruleset working! Use PR workflow as documented |
 
 ---
 
@@ -78,6 +85,18 @@
 - API enables external integrations
 - CodeQL has learning curve - solutions are OK
 
+**Phase 7 - Copilot Autofix (Optional):**
+- AI accelerates remediation, not replaces review
+- Always verify AI-generated fixes before merging
+- Great demo: show "Generate fix" → instant PR
+- If Copilot unavailable, discuss the concept and show screenshots
+
+**Phase 8 - Security Overview (Optional):**
+- Enterprise perspective - managing 100s of repos
+- Coverage gaps are eye-opening for security teams
+- Security Configurations = "golden path" for orgs
+- Private vulnerability reporting builds trust with researchers
+
 ---
 
 ## Discussion Prompts
@@ -87,6 +106,9 @@
 3. "What's the cost of rotating leaked credentials?"
 4. "How often do you update dependencies?"
 5. "What would you automate with the API?"
+6. "Would you trust AI to fix your security vulnerabilities?" *(Phase 7)*
+7. "How do you currently track security across all your repos?" *(Phase 8)*
+8. "What compliance frameworks does your org follow?" *(leads to EXTRAS.md)*
 
 ---
 
@@ -111,13 +133,22 @@
 ## Common Questions
 
 **"Is this free?"**
-Yes for public repos. Private repos need GHAS license.
+Yes for public repos. Private repos need GHAS license. Point them to [EXTRAS.md](EXTRAS.md) for full breakdown.
 
 **"Does this replace code review?"**
 No, it complements it. Catches common patterns; humans catch business logic.
 
 **"Performance impact?"**
 Scans run in Actions, not local machines.
+
+**"How much does GHAS cost?"**
+Per-committer licensing. Point to [EXTRAS.md](EXTRAS.md) for ROI discussion - one breach costs more than years of GHAS.
+
+**"Can Copilot Autofix be trusted?"**
+It's a starting point, not final answer. Always review. Show them how to verify the fix actually resolves the alert.
+
+**"We already have security tools"**
+GHAS integrates via SARIF - unified view. Native GitHub integration means developers actually use it.
 
 ---
 
@@ -133,9 +164,13 @@ Scans run in Actions, not local machines.
 
 **GitHub issues:** Use screenshots and walkthrough concepts
 
-**Finish early:** Custom CodeQL, API exploration, help others
+**Finish early:** Phase 7-8, custom CodeQL, API exploration, help others
 
-**Fall behind:** Skip optional exercises, use solutions
+**Fall behind:** Skip optional exercises, use solutions, skip Phase 7-8
+
+**No Copilot access:** Skip Phase 7 or demo with screenshots
+
+**Personal accounts only:** Phase 8 Security Overview needs org - demo or create test org
 
 ---
 
