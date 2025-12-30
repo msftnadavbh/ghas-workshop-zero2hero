@@ -691,11 +691,22 @@ The query:
 
 Let's add a GitHub Actions workflow that runs the security report on a schedule.
 
+> 💡 **Note:** If you created a ruleset in Exercise 5.3, you'll need to push via a PR instead of directly to main. This is the ruleset working as intended!
+
 ```bash
+git checkout -b add-security-workflow
 cp .github/workflows/security-report.yml.example .github/workflows/security-report.yml
 git add .github/workflows/security-report.yml
 git commit -m "Enable automated security reporting"
-git push
+git push -u origin add-security-workflow
+gh pr create --title "Add security reporting workflow" --body "Adds weekly security report"
+```
+
+Wait for CodeQL to pass, then merge the PR:
+
+```bash
+gh pr merge --merge
+git checkout main && git pull
 ```
 
 This workflow runs weekly and can be extended to post results to Slack or create issues.
