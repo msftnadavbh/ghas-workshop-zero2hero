@@ -82,7 +82,6 @@ credentials.json
 sbom.json
 dependency-report.txt
 
-# Workshop artifacts
-security-report.sh
+# Workshop artifacts (generated during workshop)
 security-campaign.md
 report.md
