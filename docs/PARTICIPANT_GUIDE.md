@@ -219,6 +219,15 @@ cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
 
 **Why this works:** The `?` placeholder tells SQLite to treat `user_id` as data, not code. Even if an attacker inputs `1 OR 1=1`, it's treated as a literal string.
 
+#### Fix with Copilot
+
+**Option 1 - Copilot Autofix:** In the Code Scanning alert page, click **"Generate fix"** to have Copilot automatically generate a parameterized query fix.
+
+**Option 2 - Copilot Chat:** Use this prompt:
+```
+Fix the SQL injection vulnerability in python-api/app.py by converting the string concatenation query to use parameterized queries with placeholders
+```
+
 </details>
 
 ---
@@ -261,6 +270,15 @@ function escapeHtml(text) {
 ```
 
 **Why this works:** `escapeHtml()` converts dangerous characters like `<` and `>` into harmless HTML entities (`&lt;` and `&gt;`), so `<script>` becomes `&lt;script&gt;` and won't execute.
+
+#### Fix with Copilot
+
+**Option 1 - Copilot Autofix:** In the Code Scanning alert page, click **"Generate fix"** to have Copilot generate an HTML escaping solution.
+
+**Option 2 - Copilot Chat:** Use this prompt:
+```
+Fix the XSS vulnerability in node-frontend/server.js by adding HTML encoding to prevent script injection in the search results template
+```
 
 </details>
 
@@ -311,6 +329,15 @@ def ping_host():
 1. Input validation rejects suspicious characters like `;` and `|`
 2. Using a list `["ping", "-c", "1", host]` instead of `shell=True` prevents shell interpretation
 
+#### Fix with Copilot
+
+**Option 1 - Copilot Autofix:** In the Code Scanning alert page, click **"Generate fix"** to have Copilot generate a secure subprocess call.
+
+**Option 2 - Copilot Chat:** Use this prompt:
+```
+Fix the command injection vulnerability in the ping_host function in python-api/app.py by adding input validation and using subprocess with list arguments instead of shell=True
+```
+
 </details>
 
 ---
@@ -325,8 +352,6 @@ CodeQL will automatically re-scan (takes ~3 minutes). Check your alert count:
 gh api repos/$OWNER/$REPO/code-scanning/alerts --jq '[.[] | select(.state=="open")] | length'
 ```
 
-> 💡 **Tip:** GitHub Copilot can suggest fixes! Click "Generate fix" on any alert in the browser.
->
 > 📁 **Reference:** Full secure versions are available in the `solutions/` folder.
 
 **✅ Phase 2 Complete!** You've deployed automated vulnerability detection and fixed real security flaws.
@@ -439,6 +464,20 @@ Your organization might have internal credential formats that GitHub doesn't rec
 
 Now any string like `WORKSHOP-ABC123XYZ789DEF0` will be flagged.
 
+### Fix with Copilot
+
+While Secret Scanning detects leaked credentials, Copilot can help you refactor code to use secure patterns instead of hardcoded secrets.
+
+**Copilot Chat prompt for config.py:**
+```
+Refactor python-api/config.py to use environment variables instead of hardcoded credentials. Create a secure configuration pattern that loads DATABASE_PASSWORD, SECRET_KEY, SMTP_PASSWORD, and AZURE_SECRET from environment variables with sensible defaults for development.
+```
+
+Copilot will generate code that:
+- Uses `os.environ.get()` for all sensitive values
+- Provides clear documentation for required environment variables
+- Follows secure configuration best practices
+
 **✅ Phase 3 Complete!** You've secured your repository against credential leaks-past and future.
 
 ---
@@ -518,6 +557,22 @@ If you see PRs, review one! Dependabot PRs include:
 - Release notes from the package
 
 > 💡 **Tip:** Give it 5-10 minutes. Dependabot runs on a schedule.
+
+### Fix with Copilot
+
+When a dependency update introduces breaking changes, Copilot can help you understand and adapt your code.
+
+**Copilot Chat prompt for understanding breaking changes:**
+```
+Explain the breaking changes between lodash 4.17.15 and the latest version, and show me how to update any affected code in this repository
+```
+
+**Copilot Chat prompt for migration assistance:**
+```
+The PyYAML package was updated from 5.1 to 6.0. Review python-api/app.py and update any deprecated YAML loading patterns to use safe_load
+```
+
+Copilot can analyze changelogs, identify deprecated APIs, and suggest code modifications to maintain compatibility.
 
 **✅ Phase 4 Complete!** Your dependencies are now automatically monitored and updated.
 
@@ -686,6 +741,22 @@ The query:
 1. Identifies logging methods (`System.out.println`, `logger.info`, etc.)
 2. Finds variables with sensitive names (`password`, `token`, `secret`)
 3. Alerts when those variables flow into log statements
+
+### Fix with Copilot
+
+Writing CodeQL queries has a learning curve. Copilot can help you get started or refine your queries.
+
+**Copilot Chat prompt for writing a new query:**
+```
+Write a CodeQL query for Java that detects when sensitive data like passwords, API tokens, or credit card numbers are passed to logging methods like System.out.println, logger.info, or logger.debug
+```
+
+**Copilot Chat prompt for improving an existing query:**
+```
+Review queries/sensitive-logging.ql and suggest improvements to catch more logging patterns and reduce false positives
+```
+
+Copilot can also explain CodeQL syntax and help debug queries that aren't matching expected patterns.
 
 **6.3 Enable automated security reporting**
 
