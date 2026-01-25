@@ -188,6 +188,13 @@ Click on any alert to see:
 
 Choose **ONE** of the following three vulnerabilities to fix. Each includes step-by-step instructions.
 
+> [!TIP]
+> **🤖 Fix with Copilot**
+>
+> Instead of manual fixes, you can use Copilot:
+> - **Autofix:** On any Code Scanning alert page, click **"Generate fix"** to have Copilot generate a secure fix automatically
+> - **Chat:** Ask Copilot Chat to explain and fix the vulnerability, e.g., `Fix the SQL injection in app.py using parameterized queries`
+
 ---
 
 <details>
@@ -315,15 +322,6 @@ def ping_host():
 
 ---
 
-> [!TIP]
-> **🤖 Fix with Copilot**
->
-> Instead of manual fixes, you can use Copilot:
-> - **Autofix:** On any Code Scanning alert page, click **"Generate fix"** to have Copilot generate a secure fix automatically
-> - **Chat:** Ask Copilot Chat to explain and fix the vulnerability, e.g., `Fix the SQL injection in app.py using parameterized queries`
-
----
-
 **After fixing, commit and push:**
 ```bash
 git add -A && git commit -m "Fix security vulnerability" && git push
@@ -348,6 +346,14 @@ gh api repos/$OWNER/$REPO/code-scanning/alerts --jq '[.[] | select(.state=="open
 - How Secret Scanning detects over 200 types of secrets
 - How Push Protection blocks secrets before they enter the repository
 - How to create custom secret patterns for internal credentials
+
+> [!TIP]
+> **🤖 Fix with Copilot**
+>
+> Copilot can help refactor hardcoded credentials to use environment variables:
+> ```
+> Refactor python-api/config.py to use environment variables instead of hardcoded credentials
+> ```
 
 ### Exercises
 
@@ -446,18 +452,6 @@ Your organization might have internal credential formats that GitHub doesn't rec
 
 Now any string like `WORKSHOP-ABC123XYZ789DEF0` will be flagged.
 
----
-
-> [!TIP]
-> **🤖 Fix with Copilot**
->
-> Copilot can help refactor hardcoded credentials to use environment variables:
-> ```
-> Refactor python-api/config.py to use environment variables instead of hardcoded credentials
-> ```
-
----
-
 **✅ Phase 3 Complete!** You've secured your repository against credential leaks-past and future.
 
 ---
@@ -470,6 +464,14 @@ Now any string like `WORKSHOP-ABC123XYZ789DEF0` will be flagged.
 - How Dependabot alerts notify you of vulnerable dependencies
 - How Dependabot security updates automatically create fix PRs
 - How to configure scheduled version updates
+
+> [!TIP]
+> **🤖 Fix with Copilot**
+>
+> When dependency updates introduce breaking changes, ask Copilot to help:
+> ```
+> Explain the breaking changes between lodash 4.17.15 and the latest version and update affected code
+> ```
 
 ### Exercises
 
@@ -537,18 +539,6 @@ If you see PRs, review one! Dependabot PRs include:
 - Release notes from the package
 
 > 💡 **Tip:** Give it 5-10 minutes. Dependabot runs on a schedule.
-
----
-
-> [!TIP]
-> **🤖 Fix with Copilot**
->
-> When dependency updates introduce breaking changes, ask Copilot to help:
-> ```
-> Explain the breaking changes between lodash 4.17.15 and the latest version and update affected code
-> ```
-
----
 
 **✅ Phase 4 Complete!** Your dependencies are now automatically monitored and updated.
 
@@ -674,6 +664,14 @@ gh pr close --delete-branch
 - How CodeQL queries work
 - How to run custom queries in your CI/CD pipeline
 
+> [!TIP]
+> **🤖 Fix with Copilot**
+>
+> CodeQL has a learning curve. Ask Copilot to help write or improve queries:
+> ```
+> Write a CodeQL query for Java that detects sensitive data passed to logging methods
+> ```
+
 ### Exercises
 
 **6.1 Run the security report script**
@@ -717,18 +715,6 @@ The query:
 1. Identifies logging methods (`System.out.println`, `logger.info`, etc.)
 2. Finds variables with sensitive names (`password`, `token`, `secret`)
 3. Alerts when those variables flow into log statements
-
----
-
-> [!TIP]
-> **🤖 Fix with Copilot**
->
-> CodeQL has a learning curve. Ask Copilot to help write or improve queries:
-> ```
-> Write a CodeQL query for Java that detects sensitive data passed to logging methods
-> ```
-
----
 
 **6.3 Enable automated security reporting**
 
