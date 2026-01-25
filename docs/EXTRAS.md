@@ -19,7 +19,7 @@
 | **Custom Secret Patterns** | ✅ | ❌ | ✅ |
 | **Security Overview** | — | ❌ | ✅ |
 | **Security Campaigns** | — | ❌ | ✅ |
-| **Copilot Autofix*** | ✅ | ❌ | ✅ |
+| **GitHub Copilot Autofix*** | ✅ | ❌ | ✅ |
 | **Dependency Review Action** | ✅ | ❌ | ✅ |
 | **Security Configurations** | — | ❌ | ✅ |
 
@@ -101,9 +101,9 @@ Security Campaigns help coordinate large-scale remediation efforts across your o
 
 ---
 
-### Copilot Autofix
+### GitHub Copilot Autofix
 
-Copilot Autofix uses AI to generate fixes for code scanning alerts. It analyzes the vulnerability, understands the code context, and suggests a patch.
+GitHub Copilot Autofix uses AI to generate fixes for code scanning alerts. It analyzes the vulnerability, understands the code context, and suggests a patch.
 
 **What it does:**
 - Generates context-aware fix suggestions

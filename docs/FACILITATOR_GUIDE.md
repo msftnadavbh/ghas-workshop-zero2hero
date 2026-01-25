@@ -53,7 +53,7 @@
 | Push not blocked | Must use CLI, not web editor |
 | No Dependabot PRs | Wait 5-10 min |
 | SBOM empty | Dependency graph needs time; return later |
-| Copilot Autofix not showing | Requires Copilot + GHAS; skip Phase 7 if unavailable |
+| GitHub Copilot Autofix not showing | Requires GitHub Copilot + GHAS; skip Phase 7 if unavailable |
 | Security Overview empty | Requires org-level access; demo with screenshots |
 | Direct push blocked (Phase 6.3) | Ruleset working! Use PR workflow as documented |
 
@@ -68,17 +68,17 @@
 **Phase 2 - Code Scanning:**
 - Static analysis finds bugs without running code
 - Show data flow visualization in alerts
-- **Fix with Copilot:** After participants complete manual fix, show how Copilot Autofix generates the same solution in seconds. Emphasize: "Understand the fix first, then see how AI accelerates it."
+- **Fix with GitHub Copilot:** After participants complete manual fix, show how GitHub Copilot Autofix generates the same solution in seconds. Emphasize: "Understand the fix first, then see how AI accelerates it."
 
 **Phase 3 - Secrets:**
 - Prevention > detection
 - Demo push protection live - it's impactful
-- **Fix with Copilot:** Show how Copilot Chat can refactor hardcoded credentials to environment variables. Good discussion: "Would you trust AI to handle your secrets configuration?"
+- **Fix with GitHub Copilot:** Show how GitHub Copilot Chat can refactor hardcoded credentials to environment variables. Good discussion: "Would you trust AI to handle your secrets configuration?"
 
 **Phase 4 - Dependabot:**
 - Automation reduces remediation time
 - Walk through dependabot.yml options
-- **Fix with Copilot:** Demonstrate how Copilot can explain breaking changes in dependency updates. Useful for complex migrations where changelog reading is time-consuming.
+- **Fix with GitHub Copilot:** Demonstrate how GitHub Copilot can explain breaking changes in dependency updates. Useful for complex migrations where changelog reading is time-consuming.
 
 **Phase 5 - Scale:**
 - Individual repo management doesn't scale
@@ -87,14 +87,14 @@
 **Phase 6 - API:**
 - API enables external integrations
 - CodeQL has learning curve - solutions are OK
-- **Fix with Copilot:** Show how Copilot can help write CodeQL queries. Great for teams new to CodeQL syntax - lowers the barrier to custom security rules.
+- **Fix with GitHub Copilot:** Show how GitHub Copilot can help write CodeQL queries. Great for teams new to CodeQL syntax - lowers the barrier to custom security rules.
 
-**Phase 7 - Copilot Autofix (Optional):**
+**Phase 7 - GitHub Copilot Autofix (Optional):**
 - AI accelerates remediation, not replaces review
 - Always verify AI-generated fixes before merging
 - Great demo: show "Generate fix" → instant PR
-- If Copilot unavailable, discuss the concept and show screenshots
-- **Note:** With "Fix with Copilot" sections now in Phases 2-4 and 6, Phase 7 serves as a deeper dive into bulk remediation workflows
+- If GitHub Copilot unavailable, discuss the concept and show screenshots
+- **Note:** With "Fix with GitHub Copilot" sections now in Phases 2-4 and 6, Phase 7 serves as a deeper dive into bulk remediation workflows
 
 **Phase 8 - Security Overview (Optional):**
 - Enterprise perspective - managing 100s of repos
@@ -114,7 +114,7 @@
 6. "Would you trust AI to fix your security vulnerabilities?" *(Phases 2-4, 6, 7)*
 7. "How do you currently track security across all your repos?" *(Phase 8)*
 8. "What compliance frameworks does your org follow?" *(leads to EXTRAS.md)*
-9. "When should you use manual fixes vs. Copilot?" *(Understanding vs. speed)*
+9. "When should you use manual fixes vs. GitHub Copilot?" *(Understanding vs. speed)*
 
 ---
 
@@ -150,7 +150,7 @@ Scans run in Actions, not local machines.
 **"How much does GHAS cost?"**
 Per-committer licensing. Point to [EXTRAS.md](EXTRAS.md) for ROI discussion - one breach costs more than years of GHAS.
 
-**"Can Copilot Autofix be trusted?"**
+**"Can GitHub Copilot Autofix be trusted?"**
 It's a starting point, not final answer. Always review. Show them how to verify the fix actually resolves the alert.
 
 **"We already have security tools"**
@@ -174,7 +174,7 @@ GHAS integrates via SARIF - unified view. Native GitHub integration means develo
 
 **Fall behind:** Skip optional exercises, use solutions, skip Phase 7-8
 
-**No Copilot access:** "Fix with Copilot" sections in Phases 2-4 and 6 are optional alternatives. Skip them and use manual fixes. Skip Phase 7 or demo with screenshots.
+**No GitHub Copilot access:** "Fix with GitHub Copilot" sections in Phases 2-4 and 6 are optional alternatives. Skip them and use manual fixes. Skip Phase 7 or demo with screenshots.
 
 **Personal accounts only:** Phase 8 Security Overview needs org - demo or create test org
 

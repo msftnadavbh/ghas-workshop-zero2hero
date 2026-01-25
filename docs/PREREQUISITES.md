@@ -74,13 +74,13 @@ gh auth status
 
 **GitHub Copilot** is not required for this workshop, but it can enhance the experience in several phases:
 
-- **Phase 2:** Use Copilot to generate quick fixes for Code Scanning alerts
-- **Phase 3:** Use Copilot Chat to refactor hardcoded credentials
-- **Phase 4:** Use Copilot to understand dependency breaking changes
-- **Phase 6:** Use Copilot to help write custom CodeQL queries
+- **Phase 2:** Use GitHub Copilot to generate quick fixes for Code Scanning alerts
+- **Phase 3:** Use GitHub Copilot Chat to refactor hardcoded credentials
+- **Phase 4:** Use GitHub Copilot to understand dependency breaking changes
+- **Phase 6:** Use GitHub Copilot to help write custom CodeQL queries
 - **Phase 7 (Optional):** Deep dive into bulk remediation and AI-assisted workflows
 
-If you have Copilot enabled, you'll see "Fix with Copilot" callouts throughout the guide.
+If you have GitHub Copilot enabled, you'll see "Fix with GitHub Copilot" callouts throughout the guide.
 
 ---
 

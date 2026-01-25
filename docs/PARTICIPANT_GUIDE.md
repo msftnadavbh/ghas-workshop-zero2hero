@@ -189,11 +189,11 @@ Click on any alert to see:
 Choose **ONE** of the following three vulnerabilities to fix. Each includes step-by-step instructions.
 
 > [!TIP]
-> **🤖 Fix with Copilot**
+> **🤖 Fix with GitHub Copilot**
 >
-> Instead of manual fixes, you can use Copilot:
-> - **Autofix:** On any Code Scanning alert page, click **"Generate fix"** to have Copilot generate a secure fix automatically
-> - **Chat:** Ask Copilot Chat to explain and fix the vulnerability, e.g., `Fix the SQL injection in app.py using parameterized queries`
+> Instead of manual fixes, you can use GitHub Copilot:
+> - **Autofix:** On any Code Scanning alert page, click **"Generate fix"** to have GitHub Copilot generate a secure fix automatically
+> - **Chat:** Ask GitHub Copilot Chat to explain and fix the vulnerability, e.g., `Fix the SQL injection in app.py using parameterized queries`
 
 ---
 
@@ -348,9 +348,9 @@ gh api repos/$OWNER/$REPO/code-scanning/alerts --jq '[.[] | select(.state=="open
 - How to create custom secret patterns for internal credentials
 
 > [!TIP]
-> **🤖 Fix with Copilot**
+> **🤖 Fix with GitHub Copilot**
 >
-> Copilot can help refactor hardcoded credentials to use environment variables:
+> GitHub Copilot can help refactor hardcoded credentials to use environment variables:
 > ```
 > Refactor python-api/config.py to use environment variables instead of hardcoded credentials
 > ```
@@ -466,9 +466,9 @@ Now any string like `WORKSHOP-ABC123XYZ789DEF0` will be flagged.
 - How to configure scheduled version updates
 
 > [!TIP]
-> **🤖 Fix with Copilot**
+> **🤖 Fix with GitHub Copilot**
 >
-> When dependency updates introduce breaking changes, ask Copilot to help:
+> When dependency updates introduce breaking changes, ask GitHub Copilot to help:
 > ```
 > Explain the breaking changes between lodash 4.17.15 and the latest version and update affected code
 > ```
@@ -665,9 +665,9 @@ gh pr close --delete-branch
 - How to run custom queries in your CI/CD pipeline
 
 > [!TIP]
-> **🤖 Fix with Copilot**
+> **🤖 Fix with GitHub Copilot**
 >
-> CodeQL has a learning curve. Ask Copilot to help write or improve queries:
+> CodeQL has a learning curve. Ask GitHub Copilot to help write or improve queries:
 > ```
 > Write a CodeQL query for Java that detects sensitive data passed to logging methods
 > ```
@@ -750,12 +750,12 @@ The following phases cover advanced GHAS features. Complete them if you have ext
 
 ---
 
-## Phase 7: Copilot Autofix & AI-Powered Remediation (25 min)
+## Phase 7: GitHub Copilot Autofix & AI-Powered Remediation (25 min)
 
-> **Your Mission:** Finding vulnerabilities is only half the battle-fixing them is where the real work begins. Copilot Autofix uses AI to automatically generate fixes for security alerts, turning hours of remediation into seconds.
+> **Your Mission:** Finding vulnerabilities is only half the battle-fixing them is where the real work begins. GitHub Copilot Autofix uses AI to automatically generate fixes for security alerts, turning hours of remediation into seconds.
 
 ### What You'll Learn
-- How Copilot Autofix generates context-aware fixes
+- How GitHub Copilot Autofix generates context-aware fixes
 - How to review and apply AI-generated patches
 - Best practices for AI-assisted remediation
 
@@ -765,20 +765,20 @@ The following phases cover advanced GHAS features. Complete them if you have ext
 
 ### Exercises
 
-**7.1 Enable Copilot Autofix**
+**7.1 Enable GitHub Copilot Autofix**
 
-Copilot Autofix is automatically available when both GHAS and Copilot are enabled. Let's verify it's working.
+GitHub Copilot Autofix is automatically available when both GHAS and GitHub Copilot are enabled. Let's verify it's working.
 
 **In your browser:**
 1. Go to your repository → Security → Code scanning alerts
 2. Click on any open alert (e.g., SQL Injection)
 3. Look for the **"Generate fix"** button or an auto-generated fix suggestion
 
-If you see a suggested fix, Copilot Autofix is working!
+If you see a suggested fix, GitHub Copilot Autofix is working!
 
 **7.2 Review an AI-generated fix**
 
-Click **"Generate fix"** on a SQL Injection alert. Copilot will analyze:
+Click **"Generate fix"** on a SQL Injection alert. GitHub Copilot will analyze:
 - The vulnerable code pattern
 - The data flow from source to sink
 - Similar fixes in open source projects
@@ -788,7 +788,7 @@ Click **"Generate fix"** on a SQL Injection alert. Copilot will analyze:
 - Does it maintain the original functionality?
 - Are there any edge cases it missed?
 
-> ⚠️ **Important:** Always review AI-generated fixes! Copilot is helpful but not infallible.
+> ⚠️ **Important:** Always review AI-generated fixes! GitHub Copilot is helpful but not infallible.
 
 **7.3 Apply and test the fix**
 
@@ -799,7 +799,7 @@ If the fix looks correct:
 3. CodeQL will re-scan to verify the vulnerability is resolved
 
 ```bash
-# List PRs from Copilot
+# List PRs from GitHub Copilot
 gh pr list --author "app/github-copilot"
 ```
 
