@@ -315,11 +315,14 @@ def ping_host():
 
 ---
 
-> 🤖 **Fix with Copilot**
+> [!TIP]
+> **🤖 Fix with Copilot**
 >
 > Instead of manual fixes, you can use Copilot:
 > - **Autofix:** On any Code Scanning alert page, click **"Generate fix"** to have Copilot generate a secure fix automatically
 > - **Chat:** Ask Copilot Chat to explain and fix the vulnerability, e.g., `Fix the SQL injection in app.py using parameterized queries`
+
+---
 
 **After fixing, commit and push:**
 ```bash
@@ -443,12 +446,17 @@ Your organization might have internal credential formats that GitHub doesn't rec
 
 Now any string like `WORKSHOP-ABC123XYZ789DEF0` will be flagged.
 
-> 🤖 **Fix with Copilot**
+---
+
+> [!TIP]
+> **🤖 Fix with Copilot**
 >
 > Copilot can help refactor hardcoded credentials to use environment variables:
 > ```
 > Refactor python-api/config.py to use environment variables instead of hardcoded credentials
 > ```
+
+---
 
 **✅ Phase 3 Complete!** You've secured your repository against credential leaks-past and future.
 
@@ -530,12 +538,17 @@ If you see PRs, review one! Dependabot PRs include:
 
 > 💡 **Tip:** Give it 5-10 minutes. Dependabot runs on a schedule.
 
-> 🤖 **Fix with Copilot**
+---
+
+> [!TIP]
+> **🤖 Fix with Copilot**
 >
 > When dependency updates introduce breaking changes, ask Copilot to help:
 > ```
 > Explain the breaking changes between lodash 4.17.15 and the latest version and update affected code
 > ```
+
+---
 
 **✅ Phase 4 Complete!** Your dependencies are now automatically monitored and updated.
 
@@ -705,12 +718,17 @@ The query:
 2. Finds variables with sensitive names (`password`, `token`, `secret`)
 3. Alerts when those variables flow into log statements
 
-> 🤖 **Fix with Copilot**
+---
+
+> [!TIP]
+> **🤖 Fix with Copilot**
 >
 > CodeQL has a learning curve. Ask Copilot to help write or improve queries:
 > ```
 > Write a CodeQL query for Java that detects sensitive data passed to logging methods
 > ```
+
+---
 
 **6.3 Enable automated security reporting**
 
